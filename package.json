@@ -1,0 +1,24 @@
+{
+  "name": "rns-artifacts",
+  "version": "1.0.0",
+  "description": "RNS library for smart contract development.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rnsdomains/rns-artifacts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rnsdomains/rns-artifacts/issues"
+  },
+  "homepage": "https://github.com/rnsdomains/rns-artifacts",
+  "keywords": [
+    "solidity",
+    "smart",
+    "contracts",
+    "rsk",
+    "rif",
+    "rns",
+    "name",
+    "service"
+  ],
+  "license": "MIT"
+}
