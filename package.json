@@ -20,5 +20,8 @@
     "name",
     "service"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "eth-ens-namehash": "^2.0.8"
+  }
 }
