@@ -70,4 +70,13 @@ contract('MultiChainResolver', async (accounts) => {
 
     assert.ok(supportsAddr && supportsContent);
   });
+
+  it('should implement RNSIP-02 - fallback function that throws', async () => {
+    try {
+      web3.eth.sendTransaction({ from: accounts[0], to: multiChainResolver.address, value: 1e18 });
+    } catch (e) {
+      return;
+    }
+    assert.fail();
+  });
 });

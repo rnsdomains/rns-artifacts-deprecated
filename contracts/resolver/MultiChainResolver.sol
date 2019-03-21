@@ -15,6 +15,10 @@ contract MultiChainResolver {
         publicResolver = _publicResolver;
     }
 
+    function () external {
+        revert();
+    }
+
     function supportsInterface (bytes4 interfaceId) public pure returns (bool) {
         return ((interfaceId == ADDR_SIGN) || (interfaceId == CONTENT_SIGN));
     }
