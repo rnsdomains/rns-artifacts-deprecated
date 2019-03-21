@@ -30,4 +30,14 @@ contract('MultiChainResolver', async (accounts) => {
 
     assert.equal(actualAddr, addr);
   });
+
+  it('should return public resolver content', async () => {
+    const content = '0x524e5320544c4400000000000000000000000000000000000000000000000000'; // bytes for 'RNS TLD'
+
+    await publicResolver.setContent(hash, content);
+
+    const actualContent = await publicResolver.content(hash);
+
+    assert.equal(actualContent, content);
+  });
 });

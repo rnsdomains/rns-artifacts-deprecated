@@ -1,15 +1,19 @@
 pragma solidity >=0.4.21 <0.6.0;
 
-import "./AbstractAddrResolver.sol";
+import "./AbstractPublicResolver.sol";
 
 contract MultiChainResolver {
-    AbstractAddrResolver publicResolver;
+    AbstractPublicResolver publicResolver;
 
-    constructor (AbstractAddrResolver _publicResolver) public {
+    constructor (AbstractPublicResolver _publicResolver) public {
         publicResolver = _publicResolver;
     }
 
-    function addr(bytes32 node) public view returns (address) {
+    function addr (bytes32 node) public view returns (address) {
         return publicResolver.addr(node);
+    }
+
+    function content (bytes32 node) public view returns (bytes32) {
+        return publicResolver.content(node);
     }
 }
