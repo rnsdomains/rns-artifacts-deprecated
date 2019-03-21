@@ -79,4 +79,13 @@ contract('MultiChainResolver', async (accounts) => {
     }
     assert.fail();
   });
+
+  it('should implement RNSIP-02 - AddrChanged event', async () => {
+    const addr = '0x0000000000111111111122222222223333333333';
+    const tx = await multiChainResolver.setAddr(hash, addr);
+
+    const loggedAddrChanged = tx.logs.filter(log => log.event === 'AddrChanged').length === 1;
+
+    assert.ok(loggedAddrChanged);
+  });
 });

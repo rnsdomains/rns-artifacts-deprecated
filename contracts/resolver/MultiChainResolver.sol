@@ -1,8 +1,9 @@
 pragma solidity >=0.4.21 <0.6.0;
 
 import "./AbstractPublicResolver.sol";
+import "./AbstractAddrResolver.sol";
 
-contract MultiChainResolver {
+contract MultiChainResolver is AbstractAddrResolver {
     AbstractPublicResolver publicResolver;
 
     mapping (bytes32 => address) addresses;
@@ -35,6 +36,7 @@ contract MultiChainResolver {
 
     function setAddr (bytes32 node, address addrValue) public {
         addresses[node] = addrValue;
+        emit AddrChanged(node, addrValue);
     }
 
     function content (bytes32 node) public view returns (bytes32) {
