@@ -16,7 +16,7 @@ contract('MultiChainResolver', async (accounts) => {
     await rns.setSubnodeOwner(0, web3.sha3('rsk'), accounts[0]);
     await rns.setResolver(hash, publicResolver.address);
 
-    multiChainResolver = await MultiChainResolver.new(publicResolver.address);
+    multiChainResolver = await MultiChainResolver.new(rns.address, publicResolver.address);
   });
 
   it('should create smart contracts', async () => { return });
@@ -100,5 +100,21 @@ contract('MultiChainResolver', async (accounts) => {
     assert(contentChangedLog);
     assert.equal(contentChangedLog.args.node, hash);
     assert.equal(contentChangedLog.args.content, content);
+  });
+
+  it('should allow only RNS owner to set addr', async () => {
+    const addr = '0x0000000000111111111122222222223333333333';
+    await multiChainResolver.setAddr(hash, addr);
+
+    try {
+      const newAddr = '0x4444444444555555555566666666667777777777';
+      await multiChainResolver.setAddr(hash, newAddr, { from: accounts[1] });
+    } catch {
+      const actualAddr = await multiChainResolver.addr(hash);
+      assert.equal(actualAddr, addr);
+      return;
+    }
+
+    assert.fail();
   });
 });

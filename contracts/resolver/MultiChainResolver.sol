@@ -1,9 +1,11 @@
 pragma solidity >=0.4.21 <0.6.0;
 
+import "../registry/AbstractRNS.sol";
 import "./AbstractPublicResolver.sol";
 import "./AbstractAddrResolver.sol";
 
 contract MultiChainResolver is AbstractAddrResolver {
+    AbstractRNS rns;
     AbstractPublicResolver publicResolver;
 
     mapping (bytes32 => address) addresses;
@@ -14,7 +16,13 @@ contract MultiChainResolver is AbstractAddrResolver {
 
     event ContentChanged (bytes32 node, bytes32 content);
 
-    constructor (AbstractPublicResolver _publicResolver) public {
+    modifier onlyOwner (bytes32 node) {
+        require(rns.owner(node) == msg.sender);
+        _;
+    }
+
+    constructor (AbstractRNS _rns, AbstractPublicResolver _publicResolver) public {
+        rns = _rns;
         publicResolver = _publicResolver;
     }
 
@@ -36,7 +44,7 @@ contract MultiChainResolver is AbstractAddrResolver {
         return publicResolver.addr(node);
     }
 
-    function setAddr (bytes32 node, address addrValue) public {
+    function setAddr (bytes32 node, address addrValue) public onlyOwner(node) {
         addresses[node] = addrValue;
         emit AddrChanged(node, addrValue);
     }
