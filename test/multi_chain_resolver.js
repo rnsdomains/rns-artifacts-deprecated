@@ -90,4 +90,15 @@ contract('MultiChainResolver', async (accounts) => {
     assert.equal(addrChangedLog.args.node, hash);
     assert.equal(addrChangedLog.args.addr, addr);
   });
+
+  it('should implement RNSIP-02 - AddrChanged event', async () => {
+    const content = '0x524e5320544c4400000000000000000000000000000000000000000000000000'; // bytes for 'RNS TLD'
+    const tx = await multiChainResolver.setContent(hash, content);
+
+    const contentChangedLog = tx.logs.find(log => log.event === 'ContentChanged');
+
+    assert(contentChangedLog);
+    assert.equal(contentChangedLog.args.node, hash);
+    assert.equal(contentChangedLog.args.content, content);
+  });
 });

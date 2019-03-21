@@ -12,6 +12,8 @@ contract MultiChainResolver is AbstractAddrResolver {
     bytes4 constant ADDR_SIGN = 0x3b3b57de;
     bytes4 constant CONTENT_SIGN = 0x2dff6941;
 
+    event ContentChanged (bytes32 node, bytes32 content);
+
     constructor (AbstractPublicResolver _publicResolver) public {
         publicResolver = _publicResolver;
     }
@@ -51,5 +53,6 @@ contract MultiChainResolver is AbstractAddrResolver {
 
     function setContent (bytes32 node, bytes32 contentValue) public {
         contents[node] = contentValue;
+        emit ContentChanged(node, contentValue);
     }
 }
