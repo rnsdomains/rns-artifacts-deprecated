@@ -40,4 +40,14 @@ contract('MultiChainResolver', async (accounts) => {
 
     assert.equal(actualContent, content);
   });
+
+  it('should be able to set addr', async () => {
+    const addr = '0x0000000000111111111122222222223333333333';
+
+    await multiChainResolver.setAddr(hash, addr);
+
+    const actualAddr = await multiChainResolver.addr(hash);
+
+    assert.equal(actualAddr, addr);
+  });
 });
