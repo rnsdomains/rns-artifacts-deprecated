@@ -8,8 +8,15 @@ contract MultiChainResolver {
     mapping (bytes32 => address) addresses;
     mapping (bytes32 => bytes32) contents;
 
+    bytes4 constant ADDR_SIGN = 0x3b3b57de;
+    bytes4 constant CONTENT_SIGN = 0x2dff6941;
+
     constructor (AbstractPublicResolver _publicResolver) public {
         publicResolver = _publicResolver;
+    }
+
+    function supportsInterface (bytes4 interfaceId) public pure returns (bool) {
+        return ((interfaceId == ADDR_SIGN) || (interfaceId == CONTENT_SIGN));
     }
 
     function addr (bytes32 node) public view returns (address) {

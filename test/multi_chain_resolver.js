@@ -60,4 +60,14 @@ contract('MultiChainResolver', async (accounts) => {
 
     assert.equal(actualContent, content);
   });
+
+  it('should implement RNSIP-02 - supportsInterface', async () => {
+    const addrSign = web3.sha3('addr(bytes32)').slice(0, 10);
+    const contentSign = web3.sha3('content(bytes32)').slice(0, 10);
+
+    const supportsAddr = await multiChainResolver.supportsInterface(addrSign);
+    const supportsContent = await multiChainResolver.supportsInterface(contentSign);
+
+    assert.ok(supportsAddr && supportsContent);
+  });
 });
