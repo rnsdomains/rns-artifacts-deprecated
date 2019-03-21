@@ -117,4 +117,21 @@ contract('MultiChainResolver', async (accounts) => {
 
     assert.fail();
   });
+
+  it('should allow only RNS owner to set addr', async () => {
+    const content = '0x524e5320544c4400000000000000000000000000000000000000000000000000'; // bytes for 'RNS TLD'
+    await multiChainResolver.setContent(hash, content);
+
+
+    try {
+      const newContent = '0x61747461636b0000000000000000000000000000000000000000000000000000'; // bytes for 'attack'
+      await multiChainResolver.setContent(hash, newContent, { from: accounts[1] });
+    } catch {
+      const actualContent = await multiChainResolver.content(hash);
+      assert.equal(actualContent, content);
+      return;
+    }
+
+    assert.fail();
+  });
 });

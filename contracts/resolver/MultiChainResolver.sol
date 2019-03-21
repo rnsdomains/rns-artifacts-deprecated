@@ -59,7 +59,7 @@ contract MultiChainResolver is AbstractAddrResolver {
         return publicResolver.content(node);
     }
 
-    function setContent (bytes32 node, bytes32 contentValue) public {
+    function setContent (bytes32 node, bytes32 contentValue) public onlyOwner(node) {
         contents[node] = contentValue;
         emit ContentChanged(node, contentValue);
     }
