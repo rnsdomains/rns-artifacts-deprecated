@@ -84,8 +84,10 @@ contract('MultiChainResolver', async (accounts) => {
     const addr = '0x0000000000111111111122222222223333333333';
     const tx = await multiChainResolver.setAddr(hash, addr);
 
-    const loggedAddrChanged = tx.logs.filter(log => log.event === 'AddrChanged').length === 1;
+    const addrChangedLog = tx.logs.find(log => log.event === 'AddrChanged');
 
-    assert.ok(loggedAddrChanged);
+    assert(addrChangedLog);
+    assert.equal(addrChangedLog.args.node, hash);
+    assert.equal(addrChangedLog.args.addr, addr);
   });
 });
