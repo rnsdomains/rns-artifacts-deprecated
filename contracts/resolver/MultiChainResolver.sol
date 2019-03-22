@@ -95,6 +95,11 @@ contract MultiChainResolver is AbstractAddrResolver {
         chainAddresses[node][chain].metadata = metadataValue;
     }
 
+    function chainAddrAndMetadata (bytes32 node, bytes4 chain) public view returns (string memory, bytes32) {
+        ChainAddress storage chainAddress = chainAddresses[node][chain];
+        return (chainAddress.addr, chainAddress.metadata);
+    }
+
     function setChainAddrWithMetadata (bytes32 node, bytes4 chain, string memory addrValue, bytes32 metadataValue) public onlyOwner(node) {
         setChainAddr(node, chain, addrValue);
         setChainMetadata(node, chain, metadataValue);

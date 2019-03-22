@@ -300,4 +300,16 @@ contract('MultiChainResolver', async (accounts) => {
     assert.equal(actualAddr, addr);
     assert.equal(actualMeta, meta);
   });
+
+  it('should get chain addr and metadata in one call', async () => {
+    const addr = '0x0000000000111111111122222222223333333333';
+    const meta = '0x5032504b48000000000000000000000000000000000000000000000000000000' // 32 bytes for 'P2PKH'
+
+    await multiChainResolver.setChainAddrWithMetadata(hash, chainId.btc, addr, meta);
+
+    const actualAddress = await multiChainResolver.chainAddrAndMetadata(hash, chainId.btc);
+
+    assert.equal(actualAddress[0], addr);
+    assert.equal(actualAddress[1], meta);
+  });
 });
