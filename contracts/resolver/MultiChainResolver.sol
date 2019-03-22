@@ -76,7 +76,7 @@ contract MultiChainResolver is AbstractAddrResolver {
         return chainAddresses[node][chain];
     }
 
-    function setChainAddr (bytes32 node, bytes4 chain, string memory addrValue) public {
+    function setChainAddr (bytes32 node, bytes4 chain, string memory addrValue) public onlyOwner(node) {
         if (chain == RSK_CHAIN_ID) {
             address _addr = stringToAddr(addrValue);
             setAddr(node, _addr);

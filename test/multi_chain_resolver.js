@@ -226,5 +226,21 @@ contract('MultiChainResolver', async (accounts) => {
         assert.equal(actualBtcAddr, btcAddr);
       });
     });
+
+    it('should allow only RNS owner to set chian address', async () => {
+      const addr = '0x0000000000111111111122222222223333333333';
+      await multiChainResolver.setChainAddr(hash, chainId.eth, addr);
+
+      try {
+        const newAddr = '0x4444444444555555555566666666667777777777';
+        await multiChainResolver.setChainAddr(hash, chainId.eth, newAddr, { from: accounts[1] });
+      } catch {
+        const actualAddr = await multiChainResolver.chainAddr(hash, chainId.eth);
+        assert.equal(actualAddr, addr);
+        return;
+      }
+
+      assert.fail();
+    });
   });
 });
