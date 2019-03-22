@@ -61,47 +61,6 @@ contract('MultiChainResolver', async (accounts) => {
     assert.equal(actualContent, content);
   });
 
-  it('should implement RNSIP-02 - supportsInterface', async () => {
-    const addrSign = web3.sha3('addr(bytes32)').slice(0, 10);
-    const contentSign = web3.sha3('content(bytes32)').slice(0, 10);
-
-    const supportsAddr = await multiChainResolver.supportsInterface(addrSign);
-    const supportsContent = await multiChainResolver.supportsInterface(contentSign);
-
-    assert.ok(supportsAddr && supportsContent);
-  });
-
-  it('should implement RNSIP-02 - fallback function that throws', async () => {
-    try {
-      web3.eth.sendTransaction({ from: accounts[0], to: multiChainResolver.address, value: 1e18 });
-    } catch (e) {
-      return;
-    }
-    assert.fail();
-  });
-
-  it('should implement RNSIP-02 - AddrChanged event', async () => {
-    const addr = '0x0000000000111111111122222222223333333333';
-    const tx = await multiChainResolver.setAddr(hash, addr);
-
-    const addrChangedLog = tx.logs.find(log => log.event === 'AddrChanged');
-
-    assert(addrChangedLog);
-    assert.equal(addrChangedLog.args.node, hash);
-    assert.equal(addrChangedLog.args.addr, addr);
-  });
-
-  it('should implement RNSIP-02 - AddrChanged event', async () => {
-    const content = '0x524e5320544c4400000000000000000000000000000000000000000000000000'; // bytes for 'RNS TLD'
-    const tx = await multiChainResolver.setContent(hash, content);
-
-    const contentChangedLog = tx.logs.find(log => log.event === 'ContentChanged');
-
-    assert(contentChangedLog);
-    assert.equal(contentChangedLog.args.node, hash);
-    assert.equal(contentChangedLog.args.content, content);
-  });
-
   it('should allow only RNS owner to set addr', async () => {
     const addr = '0x0000000000111111111122222222223333333333';
     await multiChainResolver.setAddr(hash, addr);
@@ -118,7 +77,7 @@ contract('MultiChainResolver', async (accounts) => {
     assert.fail();
   });
 
-  it('should allow only RNS owner to set addr', async () => {
+  it('should allow only RNS owner to set conetnt', async () => {
     const content = '0x524e5320544c4400000000000000000000000000000000000000000000000000'; // bytes for 'RNS TLD'
     await multiChainResolver.setContent(hash, content);
 
@@ -133,5 +92,48 @@ contract('MultiChainResolver', async (accounts) => {
     }
 
     assert.fail();
+  });
+
+  describe('RNSIP-02', async () => {
+    it('should implement supportsInterface method', async () => {
+      const addrSign = web3.sha3('addr(bytes32)').slice(0, 10);
+      const contentSign = web3.sha3('content(bytes32)').slice(0, 10);
+
+      const supportsAddr = await multiChainResolver.supportsInterface(addrSign);
+      const supportsContent = await multiChainResolver.supportsInterface(contentSign);
+
+      assert.ok(supportsAddr && supportsContent);
+    });
+
+    it('should implement fallback function that throws', async () => {
+      try {
+        web3.eth.sendTransaction({ from: accounts[0], to: multiChainResolver.address, value: 1e18 });
+      } catch (e) {
+        return;
+      }
+      assert.fail();
+    });
+
+    it('should emit AddrChanged event', async () => {
+      const addr = '0x0000000000111111111122222222223333333333';
+      const tx = await multiChainResolver.setAddr(hash, addr);
+
+      const addrChangedLog = tx.logs.find(log => log.event === 'AddrChanged');
+
+      assert(addrChangedLog);
+      assert.equal(addrChangedLog.args.node, hash);
+      assert.equal(addrChangedLog.args.addr, addr);
+    });
+
+    it('should emit ContentChanged event', async () => {
+      const content = '0x524e5320544c4400000000000000000000000000000000000000000000000000'; // bytes for 'RNS TLD'
+      const tx = await multiChainResolver.setContent(hash, content);
+
+      const contentChangedLog = tx.logs.find(log => log.event === 'ContentChanged');
+
+      assert(contentChangedLog);
+      assert.equal(contentChangedLog.args.node, hash);
+      assert.equal(contentChangedLog.args.content, content);
+    });
   });
 });
