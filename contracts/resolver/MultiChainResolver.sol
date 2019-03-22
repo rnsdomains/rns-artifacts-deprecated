@@ -9,7 +9,7 @@ contract MultiChainResolver is AbstractAddrResolver {
     AbstractPublicResolver publicResolver;
 
     mapping (bytes32 => bytes32) contents;
-    mapping (bytes32 => mapping (bytes8 => string)) chainAddresses;
+    mapping (bytes32 => mapping (bytes8 => ChainAddress)) chainAddresses;
 
     bytes4 constant ADDR_SIGN = 0x3b3b57de;
     bytes4 constant CONTENT_SIGN = 0x2dff6941;
@@ -19,6 +19,11 @@ contract MultiChainResolver is AbstractAddrResolver {
 
     event ContentChanged (bytes32 node, bytes32 content);
     event ChainAddrChanged (bytes32 node, bytes4 chain, string addr);
+
+    struct ChainAddress {
+        bytes32 metadata;
+        string addr;
+    }
 
     modifier onlyOwner (bytes32 node) {
         require(rns.owner(node) == msg.sender);
@@ -39,7 +44,7 @@ contract MultiChainResolver is AbstractAddrResolver {
     }
 
     function addr (bytes32 node) public view returns (address) {
-        string memory _addr = chainAddresses[node][RSK_CHAIN_ID];
+        string memory _addr = chainAddresses[node][RSK_CHAIN_ID].addr;
 
         if (bytes(_addr).length > 0) {
             return stringToAddress(_addr);
@@ -49,7 +54,7 @@ contract MultiChainResolver is AbstractAddrResolver {
     }
 
     function setAddr (bytes32 node, address addrValue) public onlyOwner(node) {
-        chainAddresses[node][RSK_CHAIN_ID] = addressToString(addrValue);
+        chainAddresses[node][RSK_CHAIN_ID].addr = addressToString(addrValue);
         emit AddrChanged(node, addrValue);
     }
 
@@ -69,17 +74,25 @@ contract MultiChainResolver is AbstractAddrResolver {
     }
 
     function chainAddr (bytes32 node, bytes4 chain) public view returns (string memory) {
-        return chainAddresses[node][chain];
+        return chainAddresses[node][chain].addr;
     }
 
     function setChainAddr (bytes32 node, bytes4 chain, string memory addrValue) public onlyOwner(node) {
-        chainAddresses[node][chain] = addrValue;
+        chainAddresses[node][chain].addr = addrValue;
         if (chain == RSK_CHAIN_ID) {
             address _addr = stringToAddress(addrValue);
             emit AddrChanged(node, _addr);
         } else {
             emit ChainAddrChanged(node, chain, addrValue);
         }
+    }
+
+    function chainMetadata (bytes32 node, bytes4 chain) public view returns (bytes32) {
+        return chainAddresses[node][chain].metadata;
+    }
+
+    function setChainMetadata (bytes32 node, bytes4 chain, bytes32 metadataValue) public onlyOwner(node) {
+        chainAddresses[node][chain].metadata = metadataValue;
     }
 
     function addressToString (address data) internal pure returns (string memory) {

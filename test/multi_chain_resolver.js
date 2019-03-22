@@ -277,4 +277,14 @@ contract('MultiChainResolver', async (accounts) => {
       assert(!addrChangedLog);
     });
   });
+
+  it('should store metadata for each address', async () => {
+    const meta = '0x5032504b48000000000000000000000000000000000000000000000000000000' // 32 bytes for 'P2PKH'
+
+    await multiChainResolver.setChainMetadata(hash, chainId.btc, meta);
+
+    const actualMeta = await multiChainResolver.chainMetadata(hash, chainId.btc);
+
+    assert.equal(actualMeta, meta);
+  });
 });
