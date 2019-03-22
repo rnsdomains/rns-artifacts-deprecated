@@ -168,5 +168,21 @@ contract('MultiChainResolver', async (accounts) => {
 
       assert.equal(actualAddr, addr);
     });
+
+    it('should allow only RNS owner to set rsk addr', async () => {
+      const addr = '0x0000000000111111111122222222223333333333';
+      await multiChainResolver.setAddr(hash, addr);
+
+      try {
+        const newAddr = '0x4444444444555555555566666666667777777777';
+        await multiChainResolver.setChainAddr(hash, chainId.rsk, newAddr, { from: accounts[1] });
+      } catch {
+        const actualAddr = await multiChainResolver.addr(hash);
+        assert.equal(actualAddr, addr);
+        return;
+      }
+
+      assert.fail();
+    });
   });
 });
