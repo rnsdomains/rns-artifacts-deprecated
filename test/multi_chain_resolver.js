@@ -207,6 +207,24 @@ contract('MultiChainResolver', async (accounts) => {
 
         assert.equal(actualAddr, addr);
       });
+
+      it('should store all addresses', async () => {
+        const rskAddr = '0x0000000000111111111122222222223333333333';
+        const ethAddr = '0x44444444445555555555666666666677777777777';
+        const btcAddr = '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2';
+
+        await multiChainResolver.setChainAddr(hash, chainId.rsk, rskAddr);
+        await multiChainResolver.setChainAddr(hash, chainId.eth, ethAddr);
+        await multiChainResolver.setChainAddr(hash, chainId.btc, btcAddr);
+
+        const actualRskAddr = await multiChainResolver.chainAddr(hash, chainId.rsk);
+        const actualEthAddr = await multiChainResolver.chainAddr(hash, chainId.eth);
+        const actualBtcAddr = await multiChainResolver.chainAddr(hash, chainId.btc);
+
+        assert.equal(actualRskAddr, rskAddr);
+        assert.equal(actualEthAddr, ethAddr);
+        assert.equal(actualBtcAddr, btcAddr);
+      });
     });
   });
 });
