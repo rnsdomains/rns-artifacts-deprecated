@@ -104,11 +104,13 @@ contract('MultiChainResolver', async (accounts) => {
     it('should implement supportsInterface method', async () => {
       const addrSign = web3.sha3('addr(bytes32)').slice(0, 10);
       const contentSign = web3.sha3('content(bytes32)').slice(0, 10);
+      const chainAddrSign = web3.sha3('chainAddr(bytes32,bytes4)').slice(0, 10);
 
       const supportsAddr = await multiChainResolver.supportsInterface(addrSign);
       const supportsContent = await multiChainResolver.supportsInterface(contentSign);
+      const supportsChainAddr = await multiChainResolver.supportsInterface(chainAddrSign);
 
-      assert.ok(supportsAddr && supportsContent);
+      assert.ok(supportsAddr && supportsContent && supportsChainAddr);
     });
 
     it('should implement fallback function that throws', async () => {

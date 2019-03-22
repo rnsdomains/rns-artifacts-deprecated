@@ -13,6 +13,7 @@ contract MultiChainResolver is AbstractAddrResolver {
 
     bytes4 constant ADDR_SIGN = 0x3b3b57de;
     bytes4 constant CONTENT_SIGN = 0x2dff6941;
+    bytes4 constant CHAIN_ADDR_SIGN = 0x8be4b5f6;
 
     bytes4 constant RSK_CHAIN_ID = 0x80000089;
 
@@ -33,7 +34,7 @@ contract MultiChainResolver is AbstractAddrResolver {
     }
 
     function supportsInterface (bytes4 interfaceId) public pure returns (bool) {
-        return ((interfaceId == ADDR_SIGN) || (interfaceId == CONTENT_SIGN));
+        return ((interfaceId == ADDR_SIGN) || (interfaceId == CONTENT_SIGN) || interfaceId == (CHAIN_ADDR_SIGN));
     }
 
     function addr (bytes32 node) public view returns (address) {
