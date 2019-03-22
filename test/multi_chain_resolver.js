@@ -11,7 +11,8 @@ contract('MultiChainResolver', async (accounts) => {
 
   const chainId = {
     rsk: '0x80000089',
-    eth: '0x8000003c'
+    eth: '0x8000003c',
+    btc: '0x80000000'
   };
 
   beforeEach(async () => {
@@ -186,14 +187,26 @@ contract('MultiChainResolver', async (accounts) => {
       assert.fail();
     });
 
-    it('should store other addresses', async () => {
-      const addr = '0x44444444445555555555666666666677777777777';
+    describe('supporting chains', async () => {
+      it('should store eth address', async () => {
+        const addr = '0x44444444445555555555666666666677777777777';
 
-      await multiChainResolver.setChainAddr(hash, chainId.eth, addr);
+        await multiChainResolver.setChainAddr(hash, chainId.eth, addr);
 
-      const actualAddr = await multiChainResolver.chainAddr(hash, chainId.eth);
+        const actualAddr = await multiChainResolver.chainAddr(hash, chainId.eth);
 
-      assert.equal(actualAddr, addr);
+        assert.equal(actualAddr, addr);
+      });
+
+      it('should store btc address', async () => {
+        const addr = '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2';
+
+        await multiChainResolver.setChainAddr(hash, chainId.btc, addr);
+
+        const actualAddr = await multiChainResolver.chainAddr(hash, chainId.btc);
+
+        assert.equal(actualAddr, addr);
+      });
     });
   });
 });
