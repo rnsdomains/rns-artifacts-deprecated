@@ -150,5 +150,14 @@ contract('MultiChainResolver', async (accounts) => {
 
       assert.equal(actualAddr, addr);
     });
+
+    it('should not return rsk address for other id', async () => {
+      const addr = '0x0000000000111111111122222222223333333333';
+      await multiChainResolver.setAddr(hash, addr);
+
+      const actualAddr = await multiChainResolver.chainAddr(hash, '0x00000000');
+
+      assert.notEqual(actualAddr, addr);
+    });
   });
 });

@@ -14,6 +14,8 @@ contract MultiChainResolver is AbstractAddrResolver {
     bytes4 constant ADDR_SIGN = 0x3b3b57de;
     bytes4 constant CONTENT_SIGN = 0x2dff6941;
 
+    bytes4 constant RSK_CHAIN_ID = 0x80000089;
+
     event ContentChanged (bytes32 node, bytes32 content);
 
     modifier onlyOwner (bytes32 node) {
@@ -63,13 +65,16 @@ contract MultiChainResolver is AbstractAddrResolver {
         contents[node] = contentValue;
         emit ContentChanged(node, contentValue);
     }
-    function chainAddr(bytes32 node, bytes4 chain) view returns (string) {
+
+    function chainAddr (bytes32 node, bytes4 chain) public view returns (string memory) {
+        if (chain != RSK_CHAIN_ID) return "0";
+
         address _addr = addr(node);
 
         return addrToString(_addr);
     }
 
-    function addrToString(address data) internal pure returns (string) {
+    function addrToString (address data) internal pure returns (string memory) {
         bytes memory s = new bytes(42);
         s[0] = "0";
         s[1] = "x";
@@ -83,7 +88,7 @@ contract MultiChainResolver is AbstractAddrResolver {
         return string(s);
     }
 
-    function char(byte b) internal pure returns (byte c) {
+    function char (byte b) internal pure returns (byte c) {
         if (b < 10) return byte(uint8(b) + 0x30);
         else return byte(uint8(b) + 0x57);
     }
