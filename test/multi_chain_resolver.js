@@ -10,7 +10,8 @@ contract('MultiChainResolver', async (accounts) => {
   const hash = namehash('rsk');
 
   const chainId = {
-    rsk: '0x80000089'
+    rsk: '0x80000089',
+    eth: '0x8000003c'
   };
 
   beforeEach(async () => {
@@ -183,6 +184,16 @@ contract('MultiChainResolver', async (accounts) => {
       }
 
       assert.fail();
+    });
+
+    it('should store other addresses', async () => {
+      const addr = '0x44444444445555555555666666666677777777777';
+
+      await multiChainResolver.setChainAddr(hash, chainId.eth, addr);
+
+      const actualAddr = await multiChainResolver.chainAddr(hash, chainId.eth);
+
+      assert.equal(actualAddr, addr);
     });
   });
 });

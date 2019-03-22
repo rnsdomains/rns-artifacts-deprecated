@@ -10,6 +10,7 @@ contract MultiChainResolver is AbstractAddrResolver {
 
     mapping (bytes32 => address) addresses;
     mapping (bytes32 => bytes32) contents;
+    mapping (bytes32 => mapping (bytes8 => string)) chainAddresses;
 
     bytes4 constant ADDR_SIGN = 0x3b3b57de;
     bytes4 constant CONTENT_SIGN = 0x2dff6941;
@@ -67,16 +68,22 @@ contract MultiChainResolver is AbstractAddrResolver {
     }
 
     function chainAddr (bytes32 node, bytes4 chain) public view returns (string memory) {
-        if (chain != RSK_CHAIN_ID) return "0";
+        if (chain == RSK_CHAIN_ID) {
+            address _addr = addr(node);
+            return addrToString(_addr);
+        }
 
-        address _addr = addr(node);
-
-        return addrToString(_addr);
+        return chainAddresses[node][chain];
     }
 
     function setChainAddr (bytes32 node, bytes4 chain, string memory addrValue) public {
-        address _addr = stringToAddr(addrValue);
-        setAddr(node, _addr);
+        if (chain == RSK_CHAIN_ID) {
+            address _addr = stringToAddr(addrValue);
+            setAddr(node, _addr);
+            return;
+        }
+
+        chainAddresses[node][chain] = addrValue;
     }
 
     function addrToString (address data) internal pure returns (string memory) {
