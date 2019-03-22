@@ -77,8 +77,9 @@ contract MultiChainResolver is AbstractAddrResolver {
         if (chain == RSK_CHAIN_ID) {
             address _addr = stringToAddress(addrValue);
             emit AddrChanged(node, _addr);
+        } else {
+            emit ChainAddrChanged(node, chain, addrValue);
         }
-        emit ChainAddrChanged(node, chain, addrValue);
     }
 
     function addressToString (address data) internal pure returns (string memory) {

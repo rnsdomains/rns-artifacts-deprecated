@@ -267,5 +267,14 @@ contract('MultiChainResolver', async (accounts) => {
       assert.equal(addrChangedLog.args.chain, chainId.eth);
       assert.equal(addrChangedLog.args.addr, addr);
     });
+
+    it('should not emit ChainAddrChanged event for rsk chain', async () => {
+      const addr = '0x0000000000111111111122222222223333333333';
+      const tx = await multiChainResolver.setChainAddr(hash, chainId.rsk, addr);
+
+      const addrChangedLog = tx.logs.find(log => log.event === 'ChainAddrChanged');
+
+      assert(!addrChangedLog);
+    });
   });
 });
