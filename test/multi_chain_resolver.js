@@ -288,6 +288,19 @@ contract('MultiChainResolver', async (accounts) => {
     assert.equal(actualMeta, meta);
   });
 
+  it('should emit ChainMetadataChenged event', async () => {
+    const meta = '0x5032504b48000000000000000000000000000000000000000000000000000000' // 32 bytes for 'P2PKH'
+
+    const tx = await multiChainResolver.setChainMetadata(hash, chainId.btc, meta);
+
+    const addrChangedLog = tx.logs.find(log => log.event === 'ChainMetadataChanged');
+
+    assert(addrChangedLog);
+    assert.equal(addrChangedLog.args.node, hash);
+    assert.equal(addrChangedLog.args.chain, chainId.btc);
+    assert.equal(addrChangedLog.args.metadata, meta);
+  });
+
   it('should set chain addr and metadata in one tx', async () => {
     const addr = '0x0000000000111111111122222222223333333333';
     const meta = '0x5032504b48000000000000000000000000000000000000000000000000000000' // 32 bytes for 'P2PKH'

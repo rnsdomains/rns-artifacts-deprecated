@@ -19,6 +19,7 @@ contract MultiChainResolver is AbstractAddrResolver {
 
     event ContentChanged (bytes32 node, bytes32 content);
     event ChainAddrChanged (bytes32 node, bytes4 chain, string addr);
+    event ChainMetadataChanged (bytes32 node, bytes4 chain, bytes32 metadata);
 
     struct ChainAddress {
         bytes32 metadata;
@@ -93,6 +94,7 @@ contract MultiChainResolver is AbstractAddrResolver {
 
     function setChainMetadata (bytes32 node, bytes4 chain, bytes32 metadataValue) public onlyOwner(node) {
         chainAddresses[node][chain].metadata = metadataValue;
+        emit ChainMetadataChanged(node, chain, metadataValue);
     }
 
     function chainAddrAndMetadata (bytes32 node, bytes4 chain) public view returns (string memory, bytes32) {
