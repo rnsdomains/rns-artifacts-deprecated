@@ -9,6 +9,10 @@ contract('MultiChainResolver', async (accounts) => {
 
   const hash = namehash('rsk');
 
+  const chainId = {
+    rsk: '0x80000089'
+  };
+
   beforeEach(async () => {
     const rns = await RNS.new();
     publicResolver = await PublicResolver.new(rns.address);
@@ -134,6 +138,17 @@ contract('MultiChainResolver', async (accounts) => {
       assert(contentChangedLog);
       assert.equal(contentChangedLog.args.node, hash);
       assert.equal(contentChangedLog.args.content, content);
+    });
+  });
+
+  describe('RNSIP-03', async () => {
+    it('should return rsk address', async () => {
+      const addr = '0x0000000000111111111122222222223333333333';
+      await multiChainResolver.setAddr(hash, addr);
+
+      const actualAddr = await multiChainResolver.chainAddr(hash, chainId.rsk);
+
+      assert.equal(actualAddr, addr);
     });
   });
 });

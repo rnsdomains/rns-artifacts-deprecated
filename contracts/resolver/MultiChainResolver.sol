@@ -63,4 +63,28 @@ contract MultiChainResolver is AbstractAddrResolver {
         contents[node] = contentValue;
         emit ContentChanged(node, contentValue);
     }
+    function chainAddr(bytes32 node, bytes4 chain) view returns (string) {
+        address _addr = addr(node);
+
+        return addrToString(_addr);
+    }
+
+    function addrToString(address data) internal pure returns (string) {
+        bytes memory s = new bytes(42);
+        s[0] = "0";
+        s[1] = "x";
+        for (uint i = 0; i < 20; i++) {
+            byte b = byte(uint8(uint(data) / (2**(8*(19 - i)))));
+            byte hi = byte(uint8(b) / 16);
+            byte lo = byte(uint8(b) - 16 * uint8(hi));
+            s[2*i + 2] = char(hi);
+            s[2*i + 3] = char(lo);
+        }
+        return string(s);
+    }
+
+    function char(byte b) internal pure returns (byte c) {
+        if (b < 10) return byte(uint8(b) + 0x30);
+        else return byte(uint8(b) + 0x57);
+    }
 }
