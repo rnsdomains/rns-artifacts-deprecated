@@ -8,7 +8,6 @@ contract MultiChainResolver is AbstractAddrResolver {
     AbstractRNS rns;
     AbstractPublicResolver publicResolver;
 
-    mapping (bytes32 => address) addresses;
     mapping (bytes32 => bytes32) contents;
     mapping (bytes32 => mapping (bytes8 => string)) chainAddresses;
 
@@ -38,17 +37,17 @@ contract MultiChainResolver is AbstractAddrResolver {
     }
 
     function addr (bytes32 node) public view returns (address) {
-        address _addr = addresses[node];
+        string memory _addr = chainAddresses[node][RSK_CHAIN_ID];
 
-        if (_addr != address(0)) {
-            return _addr;
+        if (bytes(_addr).length > 0) {
+            return stringToAddress(_addr);
         }
 
         return publicResolver.addr(node);
     }
 
     function setAddr (bytes32 node, address addrValue) public onlyOwner(node) {
-        addresses[node] = addrValue;
+        chainAddresses[node][RSK_CHAIN_ID] = addressToString(addrValue);
         emit AddrChanged(node, addrValue);
     }
 
@@ -68,25 +67,14 @@ contract MultiChainResolver is AbstractAddrResolver {
     }
 
     function chainAddr (bytes32 node, bytes4 chain) public view returns (string memory) {
-        if (chain == RSK_CHAIN_ID) {
-            address _addr = addr(node);
-            return addrToString(_addr);
-        }
-
         return chainAddresses[node][chain];
     }
 
     function setChainAddr (bytes32 node, bytes4 chain, string memory addrValue) public onlyOwner(node) {
-        if (chain == RSK_CHAIN_ID) {
-            address _addr = stringToAddr(addrValue);
-            setAddr(node, _addr);
-            return;
-        }
-
         chainAddresses[node][chain] = addrValue;
     }
 
-    function addrToString (address data) internal pure returns (string memory) {
+    function addressToString (address data) internal pure returns (string memory) {
         bytes memory s = new bytes(42);
         s[0] = "0";
         s[1] = "x";
@@ -106,7 +94,7 @@ contract MultiChainResolver is AbstractAddrResolver {
     }
 
     // source: https://github.com/riflabs/RIF-Token/blob/master/contracts/util/AddressHelper.sol
-    function stringToAddr(string memory s) public pure returns(address) {
+    function stringToAddress(string memory s) public pure returns(address) {
         bytes memory ss = bytes(s);
 
         // it should have 40 or 42 characters
