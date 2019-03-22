@@ -18,6 +18,7 @@ contract MultiChainResolver is AbstractAddrResolver {
     bytes4 constant RSK_CHAIN_ID = 0x80000089;
 
     event ContentChanged (bytes32 node, bytes32 content);
+    event ChainAddrChanged (bytes32 node, bytes4 chain, string addr);
 
     modifier onlyOwner (bytes32 node) {
         require(rns.owner(node) == msg.sender);
@@ -77,6 +78,7 @@ contract MultiChainResolver is AbstractAddrResolver {
             address _addr = stringToAddress(addrValue);
             emit AddrChanged(node, _addr);
         }
+        emit ChainAddrChanged(node, chain, addrValue);
     }
 
     function addressToString (address data) internal pure returns (string memory) {
