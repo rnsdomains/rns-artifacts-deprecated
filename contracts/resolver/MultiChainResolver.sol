@@ -2,12 +2,13 @@ pragma solidity >=0.4.21 <0.6.0;
 
 import "../registry/AbstractRNS.sol";
 import "./AbstractPublicResolver.sol";
-import "./AbstractAddrResolver.sol";
+import "./AbstractMultiChainResolver.sol";
 import "../util/AddressHelper.sol";
 
-contract MultiChainResolver is AbstractAddrResolver {
+contract MultiChainResolver is AbstractMultiChainResolver {
     AbstractRNS rns;
     AbstractPublicResolver publicResolver;
+
     AddressHelper addressHelper;
 
     mapping (bytes32 => bytes32) contents;
@@ -20,7 +21,6 @@ contract MultiChainResolver is AbstractAddrResolver {
     bytes4 constant RSK_CHAIN_ID = 0x80000089;
 
     event ContentChanged (bytes32 node, bytes32 content);
-    event ChainAddrChanged (bytes32 node, bytes4 chain, string addr);
     event ChainMetadataChanged (bytes32 node, bytes4 chain, bytes32 metadata);
 
     struct ChainAddress {
