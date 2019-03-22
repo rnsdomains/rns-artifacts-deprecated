@@ -141,6 +141,17 @@ contract('MultiChainResolver', async (accounts) => {
       assert.equal(contentChangedLog.args.node, hash);
       assert.equal(contentChangedLog.args.content, content);
     });
+
+    it('should emit AddrChanged event setting rsk address', async () => {
+      const addr = '0x0000000000111111111122222222223333333333';
+      const tx = await multiChainResolver.setChainAddr(hash, chainId.rsk, addr);
+
+      const addrChangedLog = tx.logs.find(log => log.event === 'AddrChanged');
+
+      assert(addrChangedLog);
+      assert.equal(addrChangedLog.args.node, hash);
+      assert.equal(addrChangedLog.args.addr, addr);
+    });
   });
 
   describe('RNSIP-03', async () => {
