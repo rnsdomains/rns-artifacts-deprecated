@@ -52,4 +52,12 @@ contract('SubdomainRegistrar', async accounts => {
 
     assert.fail();
   });
+
+  it('should allow to retrive domain ownership', async () => {
+    await subdomainRegistrar.transferBack();
+
+    const owner = await rns.owner(rootHash);
+
+    assert.equal(owner, accounts[0]);
+  });
 });
