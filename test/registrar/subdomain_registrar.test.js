@@ -10,6 +10,8 @@ contract('SubdomainRegistrar', async () => {
   beforeEach(async () => {
     rns = await RNS.new();
     subdomainRegistrar = await SubdomainRegistrar.new(rns.address, hash);
+
+    await rns.setSubnodeOwner(0, web3.sha3('rsk'), subdomainRegistrar.address);
   });
 
   it('should create SubdomainRegistrar contract', async () => { return });
@@ -25,4 +27,6 @@ contract('SubdomainRegistrar', async () => {
 
     assert.equal(actualRoot, hash);
   });
+
+  it('should own root node on rns registry', async () => { return });
 });
