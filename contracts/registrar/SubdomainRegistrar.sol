@@ -10,4 +10,8 @@ contract SubdomainRegistrar {
     rns = _rns;
     rootNode = _rootNode;
   }
+
+  function register (bytes32 node) public {
+    rns.setSubnodeOwner(rootNode, node, msg.sender);
+  }
 }
