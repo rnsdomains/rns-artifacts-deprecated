@@ -7,6 +7,11 @@ contract SubdomainRegistrar {
   bytes32 public rootNode;
   address owner;
 
+  modifier onlyOwner () {
+    require(msg.sender == owner);
+    _;
+  }
+
   constructor (AbstractRNS _rns, bytes32 _rootNode) public {
     rns = _rns;
     rootNode = _rootNode;
@@ -20,7 +25,7 @@ contract SubdomainRegistrar {
     rns.setSubnodeOwner(rootNode, label, msg.sender);
   }
 
-  function transferBack () public {
+  function transferBack () public onlyOwner() {
     rns.setOwner(rootNode, owner);
   }
 }

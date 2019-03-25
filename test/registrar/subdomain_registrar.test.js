@@ -60,4 +60,14 @@ contract('SubdomainRegistrar', async accounts => {
 
     assert.equal(owner, accounts[0]);
   });
+
+  it('should allow only owner to trasnfer back', async () => {
+    try {
+      await subdomainRegistrar.transferBack({ from: accounts[1] });
+    } catch {
+      const owner = await rns.owner(rootHash);
+      assert.equal(owner, subdomainRegistrar.address);
+      return;
+    }
+  });
 });
