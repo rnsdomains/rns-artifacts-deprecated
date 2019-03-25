@@ -11,7 +11,10 @@ contract SubdomainRegistrar {
     rootNode = _rootNode;
   }
 
-  function register (bytes32 node) public {
-    rns.setSubnodeOwner(rootNode, node, msg.sender);
+  function register (bytes32 label) public {
+    bytes32 node = keccak256(abi.encodePacked(rootNode, label));
+    require(rns.owner(node) == address(0));
+
+    rns.setSubnodeOwner(rootNode, label, msg.sender);
   }
 }

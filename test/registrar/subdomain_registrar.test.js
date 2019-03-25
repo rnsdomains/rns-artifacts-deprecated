@@ -38,4 +38,18 @@ contract('SubdomainRegistrar', async accounts => {
 
     assert.equal(owner, accounts[0]);
   });
+
+  it('should register a subnode if it\'s not owned', async () => {
+    await subdomainRegistrar.register(web3.sha3('subdomain'), { from: accounts[0] });
+
+    try {
+      await subdomainRegistrar.register(web3.sha3('subdomain'), { from: accounts[1] });
+    } catch {
+      const owner = await rns.owner(hash);
+      assert.equal(owner, accounts[0]);
+      return;
+    }
+
+    assert.fail();
+  });
 });
