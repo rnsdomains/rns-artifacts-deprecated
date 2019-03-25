@@ -4,8 +4,10 @@ import "../registry/AbstractRNS.sol";
 
 contract SubdomainRegistrar {
   AbstractRNS public rns;
+  bytes32 public rootNode;
 
-  constructor (AbstractRNS _rns) public {
+  constructor (AbstractRNS _rns, bytes32 _rootNode) public {
     rns = _rns;
+    rootNode = _rootNode;
   }
 }
