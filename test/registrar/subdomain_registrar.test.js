@@ -5,12 +5,13 @@ const namehash = require('eth-ens-namehash').hash;
 
 contract('SubdomainRegistrar', async accounts => {
   var rns, subdomainRegistrar;
-  const rootHash = namehash('rsk');
-  const hash = namehash('subdomain.rsk');
+  const rooNode = namehash('rsk');
+  const label = web3.sha3('subdomain');
+  const node = namehash('subdomain.rsk');
 
   beforeEach(async () => {
     rns = await RNS.new();
-    subdomainRegistrar = await SubdomainRegistrar.new(rns.address, rootHash);
+    subdomainRegistrar = await SubdomainRegistrar.new(rns.address, rooNode);
 
     await rns.setSubnodeOwner(0, web3.sha3('rsk'), subdomainRegistrar.address);
   });
@@ -26,26 +27,26 @@ contract('SubdomainRegistrar', async accounts => {
   it('should store root domain', async () => {
     const actualRoot = await subdomainRegistrar.rootNode();
 
-    assert.equal(actualRoot, rootHash);
+    assert.equal(actualRoot, rooNode);
   });
 
   it('should own root node on rns registry', async () => { return });
 
   it('should register a subnode in rns', async () => {
-    await subdomainRegistrar.register(web3.sha3('subdomain'), { from: accounts[0] });
+    await subdomainRegistrar.register(label, { from: accounts[0] });
 
-    const owner = await rns.owner(hash);
+    const owner = await rns.owner(node);
 
     assert.equal(owner, accounts[0]);
   });
 
   it('should register a subnode if it\'s not owned', async () => {
-    await subdomainRegistrar.register(web3.sha3('subdomain'), { from: accounts[0] });
+    await subdomainRegistrar.register(label, { from: accounts[0] });
 
     try {
-      await subdomainRegistrar.register(web3.sha3('subdomain'), { from: accounts[1] });
+      await subdomainRegistrar.register(label, { from: accounts[1] });
     } catch {
-      const owner = await rns.owner(hash);
+      const owner = await rns.owner(node);
       assert.equal(owner, accounts[0]);
       return;
     }
@@ -56,7 +57,7 @@ contract('SubdomainRegistrar', async accounts => {
   it('should allow to retrive domain ownership', async () => {
     await subdomainRegistrar.transferBack();
 
-    const owner = await rns.owner(rootHash);
+    const owner = await rns.owner(rooNode);
 
     assert.equal(owner, accounts[0]);
   });
@@ -65,7 +66,7 @@ contract('SubdomainRegistrar', async accounts => {
     try {
       await subdomainRegistrar.transferBack({ from: accounts[1] });
     } catch {
-      const owner = await rns.owner(rootHash);
+      const owner = await rns.owner(rooNode);
       assert.equal(owner, subdomainRegistrar.address);
       return;
     }
