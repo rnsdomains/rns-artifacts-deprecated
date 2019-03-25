@@ -325,4 +325,10 @@ contract('MultiChainResolver', async (accounts) => {
     assert.equal(actualAddress[0], addr);
     assert.equal(actualAddress[1], meta);
   });
+
+  it('should get null for an addr chain not set', async () => {
+    const addr = await multiChainResolver.chainAddr(hash, chainId.eth);
+
+    assert(!addr);
+  });
 });
