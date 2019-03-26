@@ -4,9 +4,15 @@ contract Whitelist {
 	address public owner;
 
 	mapping (address => bool) public isManager;
+	mapping (address => bool) public isWhitelisted;
 
-	modifier isOwner () {
+	modifier onlyOwner () {
 		require(msg.sender == owner);
+		_;
+	}
+
+	modifier onlyManagers () {
+		require(isManager[msg.sender]);
 		_;
 	}
 
@@ -14,7 +20,11 @@ contract Whitelist {
 		owner = msg.sender;
 	}
 
-	function addManager (address manager) public isOwner() {
+	function addManager (address manager) public onlyOwner() {
 		isManager[manager] = true;
+	}
+
+	function addWhitelisted (address whitelisted) public onlyManagers() {
+		isWhitelisted[whitelisted] = true;
 	}
 }
