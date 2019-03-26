@@ -32,4 +32,11 @@ contract PublicSubdomainRegistrar {
     function transferBack (bytes32 node) public onlyPreviousOwner(node) {
         rns.setOwner(node, delegated[node]);
     }
+
+    function register (bytes32 node, bytes32 label) public {
+        address subnodeOwner = rns.owner(keccak256(abi.encodePacked(node, label)));
+        require(subnodeOwner == address(0));
+
+        rns.setSubnodeOwner(node, label, msg.sender);
+    }
 }

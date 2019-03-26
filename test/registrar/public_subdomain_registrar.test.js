@@ -81,4 +81,29 @@ contract('PublicSubdomainRegistrar', async accounts => {
 
     assert.fail();
   });
+
+  it('should register subdomains', async () => {
+    await rns.setSubnodeOwner(0, label, publicSubdomainRegistrar.address);
+    await publicSubdomainRegistrar.delegate(node);
+
+    await publicSubdomainRegistrar.register(node, web3.sha3('ilan'), { from: accounts[1] });
+
+    const owner = await rns.owner(namehash('ilan.rsk'));
+
+    assert.equal(owner, accounts[1]);
+  });
+
+  it('should not allow to register owned subdomains', async () => {
+    await rns.setSubnodeOwner(0, label, publicSubdomainRegistrar.address);
+    await publicSubdomainRegistrar.delegate(node);
+    await publicSubdomainRegistrar.register(node, web3.sha3('ilan'));
+
+    try {
+      await publicSubdomainRegistrar.register(node, web3.sha3('ilan'), { from: accounts[1] });
+    } catch {
+      return;
+    }
+
+    assert.fail();
+  });
 });
