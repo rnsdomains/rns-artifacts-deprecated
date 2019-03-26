@@ -4,7 +4,9 @@ contract Whitelist {
 	address public owner;
 
 	mapping (address => bool) public isManager;
-	mapping (address => bool) public isWhitelisted;
+	mapping (address => uint) public whitelistedUntil;
+
+	uint public whitelistedTime;
 
 	modifier onlyOwner () {
 		require(msg.sender == owner);
@@ -18,6 +20,7 @@ contract Whitelist {
 
 	constructor () public {
 		owner = msg.sender;
+		whitelistedTime = 1 days;
 	}
 
 	function addManager (address manager) public onlyOwner() {
@@ -29,10 +32,18 @@ contract Whitelist {
 	}
 
 	function addWhitelisted (address whitelisted) public onlyManagers() {
-		isWhitelisted[whitelisted] = true;
+		whitelistedUntil[whitelisted] = now + whitelistedTime;
 	}
 
 	function removeWhitelisted (address whitelisted) public onlyManagers() {
-		isWhitelisted[whitelisted] = false;
+		whitelistedUntil[whitelisted] = 0;
+	}
+
+	function isWhitelisted (address whitelisted) public view returns (bool) {
+		return whitelistedUntil[whitelisted] > now;
+	}
+
+	function setWhitelistedTime (uint time) public onlyOwner () {
+		whitelistedTime = time;
 	}
 }
