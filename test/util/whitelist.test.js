@@ -70,4 +70,49 @@ contract('Whitelist', async accounts => {
 
     assert.fail();
   });
+
+  it('should be able to remove managers', async () => {
+    const manager = accounts[1];
+
+    await whitelist.addManager(manager);
+
+    await whitelist.removeManager(manager);
+
+    const isManager = await whitelist.isManager(manager);
+
+    assert.ok(!isManager);
+  });
+
+  it('should let only owner to remove managers', async () => {
+    const manager = accounts[1];
+    await whitelist.addManager(manager);
+
+    try {
+      await whitelist.removeManager(manager, { from: accounts[2] });
+    } catch {
+      const isManager = await whitelist.isManager(accounts[1]);
+      assert.ok(isManager);
+      return;
+    }
+
+    assert.fail();
+  });
+
+  it('should not allow managers to remove managers', async () => {
+    const manager = accounts[0];
+    const otherManager = accounts[1]
+
+    await whitelist.addManager(manager);
+    await whitelist.addManager(otherManager);
+
+    try {
+      await whitelist.removeManager(manager, { from: otherManager });
+    } catch {
+      const isManager = await whitelist.isManager(manager);
+      assert.ok(isManager);
+      return;
+    }
+
+    assert.fail();
+  });
 });

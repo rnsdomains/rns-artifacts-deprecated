@@ -24,6 +24,10 @@ contract Whitelist {
 		isManager[manager] = true;
 	}
 
+	function removeManager (address manager) public onlyOwner() {
+		isManager[manager] = false;
+	}
+
 	function addWhitelisted (address whitelisted) public onlyManagers() {
 		isWhitelisted[whitelisted] = true;
 	}
