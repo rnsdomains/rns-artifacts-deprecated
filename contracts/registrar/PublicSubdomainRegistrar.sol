@@ -5,10 +5,15 @@ import "../registry/AbstractRNS.sol";
 contract PublicSubdomainRegistrar {
     AbstractRNS public rns;
 
-    mapping (bytes32 => bool) delegated;
+    mapping (bytes32 => address) delegated;
 
     modifier onlyOwned (bytes32 node) {
         require(rns.owner(node) == address(this));
+        _;
+    }
+
+    modifier onlyPreviousOwner (bytes32 node) {
+        require(msg.sender == delegated[node]);
         _;
     }
 
@@ -17,10 +22,14 @@ contract PublicSubdomainRegistrar {
     }
 
     function delegate (bytes32 node) public onlyOwned(node) {
-        delegated[node] = true;
+        delegated[node] = msg.sender;
     }
 
-    function isDelegated (bytes32 node) public view returns(bool) {
-        return delegated[node];
+    function isDelegated (bytes32 node) public view returns (bool) {
+        return delegated[node] != address(0);
+    }
+
+    function transferBack (bytes32 node) public onlyPreviousOwner(node) {
+        rns.setOwner(node, delegated[node]);
     }
 }

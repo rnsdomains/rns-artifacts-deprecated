@@ -3,7 +3,7 @@ const PublicSubdomainRegistrar = artifacts.require('PublicSubdomainRegistrar');
 const RNS = artifacts.require('RNS');
 const namehash = require('eth-ens-namehash').hash;
 
-contract('PublicSubdomainRegistrar', async () => {
+contract('PublicSubdomainRegistrar', async accounts => {
   var publicSubdomainRegistrar, rns;
 
   const label = web3.sha3('rsk');
@@ -56,5 +56,29 @@ contract('PublicSubdomainRegistrar', async () => {
     const isOtherDelegated = await publicSubdomainRegistrar.isDelegated(otherNode);
 
     assert.ok(isDelegated && isOtherDelegated);
+  });
+
+  it('should transfer back nodes to previous owners', async () => {
+    await rns.setSubnodeOwner(0, label, publicSubdomainRegistrar.address);
+    await publicSubdomainRegistrar.delegate(node, { from: accounts[0] });
+
+    await publicSubdomainRegistrar.transferBack(node);
+
+    const owner = await rns.owner(node);
+
+    assert.equal(owner, accounts[0]);
+  });
+
+  it('should allow only previous owner to transfer back nodes', async () => {
+    await rns.setSubnodeOwner(0, label, publicSubdomainRegistrar.address);
+    await publicSubdomainRegistrar.delegate(node, { from: accounts[0] });
+
+    try {
+      await publicSubdomainRegistrar.transferBack(node, { from: accounts[1] });
+    } catch {
+      return;
+    }
+
+    assert.fail();
   });
 });
