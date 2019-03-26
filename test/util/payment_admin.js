@@ -43,4 +43,35 @@ contract('PaymentAdmin', async accounts => {
 
     assert.equal(actualBalance, balance.toNumber() + value);
   });
+
+  it('should retrive received tokens', async () => {
+    const value = 1e19;
+    const receiver = accounts[2];
+
+    const balance = await token.balanceOf(paymentAdmin.address);
+    const receiverBalance = await token.balanceOf(receiver);
+
+    await token.transfer(paymentAdmin.address, value, { from: tokenHolder });
+    await paymentAdmin.retriveTokens(token.address, receiver);
+
+    const actualBalance = await token.balanceOf(paymentAdmin.address);
+    const actualReceiverBalance = await token.balanceOf(receiver);
+
+    assert.equal(actualBalance.toNumber(), balance.toNumber());
+    assert.equal(actualReceiverBalance, receiverBalance.toNumber() + value);
+  });
+
+  it('should allow only owner to retrive tokens', async () => {
+    const value = 1e19;
+    await token.transfer(paymentAdmin.address, value, { from: tokenHolder });
+
+    const balance = await token.balanceOf(paymentAdmin.address);
+
+    try {
+      await paymentAdmin.retriveTokens(token.address, accounts[3], { from: accounts[3] });
+    } catch {
+      const actualBalance = await token.balanceOf(paymentAdmin.address);
+      assert.equal(actualBalance, balance);
+    }
+  });
 });
