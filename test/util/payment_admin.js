@@ -18,4 +18,15 @@ contract('PaymentAdmin', async accounts => {
 
     assert.equal(actualOwner, owner);
   });
+
+  it('should fallback to owner address', async () => {
+    const balance = await web3.eth.getBalance(owner);
+    const value = 1e18;
+
+    await web3.eth.sendTransaction({ from: accounts[1], to: paymentAdmin.address, value });
+
+    const actualBalance = await web3.eth.getBalance(owner);
+
+    assert.equal(actualBalance, balance.toNumber() + value);
+  });
 });
