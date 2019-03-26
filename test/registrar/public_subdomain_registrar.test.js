@@ -6,6 +6,9 @@ const namehash = require('eth-ens-namehash').hash;
 contract('PublicSubdomainRegistrar', async () => {
   var publicSubdomainRegistrar, rns;
 
+  const label = web3.sha3('rsk');
+  const node = namehash('rsk');
+
   beforeEach(async () => {
     rns = await RNS.new();
     publicSubdomainRegistrar = await PublicSubdomainRegistrar.new(rns.address);
@@ -20,17 +23,38 @@ contract('PublicSubdomainRegistrar', async () => {
   });
 
   it('should receive delegated root nodes only if owned', async () => {
-    const hash = namehash('rsk');
-    const label = web3.sha3('rsk');
-
     try {
-      await publicSubdomainRegistrar.delegate(hash);
+      await publicSubdomainRegistrar.delegate(node);
     } catch {
       await rns.setSubnodeOwner(0, label, publicSubdomainRegistrar.address);
-      await publicSubdomainRegistrar.delegate(hash);
+      await publicSubdomainRegistrar.delegate(node);
       return;
     }
 
     assert.fail();
+  });
+
+  it('should store one delegated node', async () => {
+    await rns.setSubnodeOwner(0, label, publicSubdomainRegistrar.address);
+    await publicSubdomainRegistrar.delegate(node);
+
+    const isDelegated = await publicSubdomainRegistrar.isDelegated(node);
+
+    assert.ok(isDelegated);
+  });
+
+  it('should store many delegated nodes', async () => {
+    const otherLabel = web3.sha3('rif');
+    const otherNode = namehash('rif');
+
+    await rns.setSubnodeOwner(0, label, publicSubdomainRegistrar.address);
+    await publicSubdomainRegistrar.delegate(node);
+    await rns.setSubnodeOwner(0, otherLabel, publicSubdomainRegistrar.address);
+    await publicSubdomainRegistrar.delegate(otherNode);
+
+    const isDelegated = await publicSubdomainRegistrar.isDelegated(node);
+    const isOtherDelegated = await publicSubdomainRegistrar.isDelegated(otherNode);
+
+    assert.ok(isDelegated && isOtherDelegated);
   });
 });
