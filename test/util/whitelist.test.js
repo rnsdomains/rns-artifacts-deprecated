@@ -115,4 +115,36 @@ contract('Whitelist', async accounts => {
 
     assert.fail();
   });
+
+  it('should be able to remove whitelisted', async () => {
+    const manager = accounts[1];
+    const whitelisted = accounts[2];
+
+    await whitelist.addManager(manager);
+    await whitelist.addWhitelisted(whitelisted, { from: manager });
+
+    await whitelist.removeWhitelisted(whitelisted, { from: manager });
+
+    const isWhitelisted = await whitelist.isWhitelisted(whitelisted);
+
+    assert.ok(!isWhitelisted);
+  });
+
+  it('should let only managers to remove whitelisted', async () => {
+    const manager = accounts[1];
+    const whitelisted = accounts[2];
+
+    await whitelist.addManager(manager);
+    await whitelist.addWhitelisted(whitelisted, { from: manager });
+
+    try {
+      await whitelist.removeWhitelisted(whitelisted, { from: accounts[3] });
+    } catch {
+      const isWhitelisted = await whitelist.isWhitelisted(whitelisted);
+      assert.ok(isWhitelisted);
+      return;
+    }
+
+    assert.fail();
+  });
 });

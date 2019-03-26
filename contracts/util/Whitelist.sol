@@ -31,4 +31,8 @@ contract Whitelist {
 	function addWhitelisted (address whitelisted) public onlyManagers() {
 		isWhitelisted[whitelisted] = true;
 	}
+
+	function removeWhitelisted (address whitelisted) public onlyManagers() {
+		isWhitelisted[whitelisted] = false;
+	}
 }
