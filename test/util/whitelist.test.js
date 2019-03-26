@@ -161,4 +161,31 @@ contract('Whitelist', async accounts => {
 
     assert.ok(!isWhitelisted);
   });
+
+  it('should whitelist for a given period', async () => {
+    await whitelist.setExpirationTime(172800);
+    const manager = accounts[1];
+    const whitelisted = accounts[2];
+
+    await whitelist.addManager(manager);
+    await whitelist.addWhitelisted(whitelisted, { from: manager });
+
+    await web3.currentProvider.send({ id: 0, jsonrpc: '2.0', method: 'evm_increaseTime', params: [172800] });
+
+    const isWhitelisted = await whitelist.isWhitelisted(whitelisted);
+
+    assert.ok(!isWhitelisted);
+  });
+
+  it('should allow only owner to change period', async () => {
+    try {
+      await whitelist.setExpirationTime(1, { from: accounts[1] });
+    } catch {
+      const time = await whitelist.whitelistedTime();
+      assert.equal(time, 86400);
+      return;
+    }
+
+    assert.fail();
+  });
 });

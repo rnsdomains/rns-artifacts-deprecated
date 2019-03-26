@@ -43,7 +43,7 @@ contract Whitelist {
 		return whitelistedUntil[whitelisted] > now;
 	}
 
-	function setWhitelistedTime (uint time) public onlyOwner () {
+	function setExpirationTime (uint time) public onlyOwner() {
 		whitelistedTime = time;
 	}
 }
