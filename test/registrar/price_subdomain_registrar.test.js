@@ -11,4 +11,10 @@ contract('PriceSubdomainRegistrar', async () => {
   it('should create PriceSubdomainRegistrar contract', async () => {
     assert.ok(registrar.address);
   });
+
+  it('should manage payments with PaymentAdmin', async () => {
+    const admin = await registrar.admin();
+
+    assert.ok(admin);
+  });
 });
