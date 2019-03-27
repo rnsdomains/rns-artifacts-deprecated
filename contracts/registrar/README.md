@@ -8,6 +8,6 @@ _[Further reading](https://docs.rns.rsk.co/architecture/registrar)_
 
 ## Resources
 
-- [SubdomainRegistrar](/DOCS/Subdomain_Registrar.md): this contract is owner of a node and lets anyone to emit subnodes.
-- [PublicSubdomainRegistrar](/DOCS/Public_Subdomain_Registrar.md): this contract is owner of many nodes and lets anyone to emit subnodes under any of them.
-- [PriceSubdomainRegitrar](/DOCS/Price_Subdomain_Registrar.md): this contract gives a price to anyone who is whitelisted and registers it's subnode.
+- [SubdomainRegistrar](./DOCS/Subdomain_Registrar.md): this contract is owner of a node and lets anyone to emit subnodes.
+- [PublicSubdomainRegistrar](./DOCS/Public_Subdomain_Registrar.md): this contract is owner of many nodes and lets anyone to emit subnodes under any of them.
+- [PriceSubdomainRegitrar](./DOCS/Price_Subdomain_Registrar.md): this contract gives a price to anyone who is whitelisted and registers it's subnode.
