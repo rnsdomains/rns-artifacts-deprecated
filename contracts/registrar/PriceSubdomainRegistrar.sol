@@ -8,9 +8,11 @@ contract PriceSubdomainRegistrar {
     PaymentAdmin public admin = new PaymentAdmin();
     AbstractRNS public rns;
     AbstractWhitelist public whitelist;
+    bytes32 public rootNode;
 
-    constructor (AbstractRNS _rns, AbstractWhitelist _whitelist) public {
+    constructor (AbstractRNS _rns, AbstractWhitelist _whitelist, bytes32 _rootNode) public {
         rns = _rns;
         whitelist = _whitelist;
+        rootNode = _rootNode;
     }
 }
