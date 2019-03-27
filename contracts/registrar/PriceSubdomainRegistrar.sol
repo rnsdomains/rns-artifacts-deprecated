@@ -42,4 +42,8 @@ contract PriceSubdomainRegistrar {
     function setPrice (uint256 _price) public onlyOwner() {
         price = _price;
     }
+
+    function retriveTokens (address receiver, ERC20Basic token) public onlyOwner() {
+        admin.retriveTokens(receiver, token);
+    }
 }

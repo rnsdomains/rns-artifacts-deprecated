@@ -148,4 +148,30 @@ contract('PriceSubdomainRegistrar', async accounts => {
 
     assert.fail();
   });
+
+  it('should allow to retrive tokens', async () => {
+    const receiver = accounts[4];
+    const balance = await token.balanceOf(receiver);
+
+    await registrar.retriveTokens(receiver, token.address);
+
+    const actualBalance = await token.balanceOf(receiver);
+
+    assert.equal(actualBalance, balance.toNumber() + adminInitialBalance);
+  });
+
+  it('should allow only owner to retrive tokens', async () => {
+    const receiver = accounts[6];
+    const balance = await token.balanceOf(receiver);
+
+    try {
+      await registrar.retriveTokens(receiver, token.address, { from: receiver});
+    } catch {
+      const actualBalance = await token.balanceOf(receiver);
+      assert.equal(actualBalance, balance.toNumber());
+      return;
+    }
+
+    assert.fail();
+  });
 });
