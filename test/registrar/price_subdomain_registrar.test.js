@@ -19,6 +19,8 @@ contract('PriceSubdomainRegistrar', async accounts => {
   const label = web3.sha3('whitelisted');
   const subdomain = namehash('whitelisted.rsk');
 
+  const initialPrice = 1e18;
+
   beforeEach(async () => {
     rns = await RNS.new();
     whitelist = await Whitelist.new();
@@ -120,6 +122,30 @@ contract('PriceSubdomainRegistrar', async accounts => {
 
     const actualBalance = await token.balanceOf(whitelisted);
 
-    assert.equal(actualBalance, balance.toNumber() + 1e18);
+    assert.equal(actualBalance, balance.toNumber() + initialPrice);
+  });
+
+  it('should update token price', async () => {
+    const price = 2e18;
+
+    await registrar.setPrice(price);
+
+    const actualPrice = await registrar.price();
+
+    assert.equal(actualPrice, price);
+  });
+
+  it('should allow only owner to update token price', async () => {
+    const price = 10e18;
+
+    try {
+      await registrar.setPrice(price, { from: accounts[4]});
+    } catch {
+      const actualPrice = await registrar.price();
+      assert.equal(actualPrice, initialPrice);
+      return;
+    }
+
+    assert.fail();
   });
 });
