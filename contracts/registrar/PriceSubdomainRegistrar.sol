@@ -10,9 +10,18 @@ contract PriceSubdomainRegistrar {
     AbstractWhitelist public whitelist;
     bytes32 public rootNode;
 
+    modifier onlyWhitelisted () {
+        require(whitelist.isWhitelisted(msg.sender));
+        _;
+    }
+
     constructor (AbstractRNS _rns, AbstractWhitelist _whitelist, bytes32 _rootNode) public {
         rns = _rns;
         whitelist = _whitelist;
         rootNode = _rootNode;
+    }
+
+    function register (bytes32 label) public onlyWhitelisted() {
+        rns.setSubnodeOwner(rootNode, label, msg.sender);
     }
 }
