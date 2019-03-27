@@ -1,6 +1,8 @@
 pragma solidity >=0.4.21 <0.6.0;
 
-contract Whitelist {
+import "./AbstractWhitelist.sol";
+
+contract Whitelist is AbstractWhitelist {
 	address public owner;
 
 	mapping (address => bool) public isManager;
