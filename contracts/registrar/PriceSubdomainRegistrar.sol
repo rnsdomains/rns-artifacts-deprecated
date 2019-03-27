@@ -23,5 +23,6 @@ contract PriceSubdomainRegistrar {
 
     function register (bytes32 label) public onlyWhitelisted() {
         rns.setSubnodeOwner(rootNode, label, msg.sender);
+        whitelist.removeWhitelisted(msg.sender);
     }
 }

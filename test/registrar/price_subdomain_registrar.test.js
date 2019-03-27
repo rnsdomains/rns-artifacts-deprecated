@@ -11,6 +11,8 @@ contract('PriceSubdomainRegistrar', async accounts => {
   const whitelisted = accounts[2];
 
   const rootNode = namehash('rsk');
+  const label = web3.sha3('whitelisted');
+  const subdomain = namehash('whitelisted.rsk');
 
   beforeEach(async () => {
     rns = await RNS.new();
@@ -19,7 +21,10 @@ contract('PriceSubdomainRegistrar', async accounts => {
 
     await rns.setSubnodeOwner(0, web3.sha3('rsk'), registrar.address);
 
+    await whitelist.addManager(registrar.address);
+
     await whitelist.addManager(whitelistManager);
+    await whitelist.addWhitelisted(whitelisted, { from: whitelistManager });
   });
 
   it('should create PriceSubdomainRegistrar contract', async () => {
@@ -58,29 +63,38 @@ contract('PriceSubdomainRegistrar', async accounts => {
   });
 
   it('should register subdomains for whitelisted accounts', async () => {
-    await whitelist.addWhitelisted(whitelisted, { from: whitelistManager });
-
-    const label = web3.sha3('whitelisted');
     await registrar.register(label, { from: whitelisted });
 
-    const subdomain = namehash('whitelisted.rsk');
     const owner = await rns.owner(subdomain);
 
     assert.equal(owner, whitelisted);
   });
 
   it('should not register subdomains for not-whitelisted accounts', async () => {
-    const label = web3.sha3('whitelisted');
+    const owner = await rns.owner(subdomain);
 
     try {
-      await registrar.register(label, { from: whitelisted });
+      await registrar.register(label, { from: accounts[3] });
     } catch {
-      const subdomain = namehash('whitelisted.rsk');
-      const owner = await rns.owner(subdomain);
-      assert.equal(owner, '0x0000000000000000000000000000000000000000');
+      const actualOwner = await rns.owner(subdomain);
+      assert.equal(actualOwner, owner);
       return;
     }
 
     assert.fail();
+  });
+
+  it('should be a whitelist manager', async () => {
+    const isWhitelisted = whitelist.isWhitelisted(registrar.address);
+
+    assert.ok(isWhitelisted);
+  })
+
+  it('should remove whitelisted after registration', async () => {
+    await registrar.register(label, { from: whitelisted });
+
+    const isWhitelisted = await whitelist.isWhitelisted(whitelisted);
+
+    assert.ok(!isWhitelisted);
   });
 });
