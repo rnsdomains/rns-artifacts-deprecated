@@ -52,7 +52,7 @@ contract('PaymentAdmin', async accounts => {
     const receiverBalance = await token.balanceOf(receiver);
 
     await token.transfer(paymentAdmin.address, value, { from: tokenHolder });
-    await paymentAdmin.retriveTokens(token.address, receiver);
+    await paymentAdmin.retriveTokens(receiver, token.address);
 
     const actualBalance = await token.balanceOf(paymentAdmin.address);
     const actualReceiverBalance = await token.balanceOf(receiver);
@@ -68,10 +68,46 @@ contract('PaymentAdmin', async accounts => {
     const balance = await token.balanceOf(paymentAdmin.address);
 
     try {
-      await paymentAdmin.retriveTokens(token.address, accounts[3], { from: accounts[3] });
+      await paymentAdmin.retriveTokens(accounts[3], token.address, { from: accounts[3] });
     } catch {
       const actualBalance = await token.balanceOf(paymentAdmin.address);
-      assert.equal(actualBalance, balance);
+      assert.equal(actualBalance, balance.toNumber());
+      return;
     }
+
+    assert.fail();
+  });
+
+  it('should transfer tokens to another account', async () => {
+    const value = 1e18;
+    const receiver = accounts[2];
+
+    await token.transfer(paymentAdmin.address, 1e19, { from: tokenHolder });
+
+    const balance = await token.balanceOf(receiver);
+
+    await paymentAdmin.transfer(receiver, token.address, value);
+
+    const actualBalance = await token.balanceOf(receiver);
+
+    assert.equal(actualBalance.toNumber(), balance.toNumber() + value);
+  });
+
+  it('should allow only owner to send tokens', async () => {
+    await token.transfer(paymentAdmin.address, 1e19, { from: tokenHolder });
+
+    const balance = await token.balanceOf(paymentAdmin.address);
+
+    try {
+      const value = 1e18;
+
+      await paymentAdmin.transfer(accounts[4], token.address, value, { from: accounts[4] });
+    } catch {
+      const actualBalance = await token.balanceOf(paymentAdmin.address);
+      assert.equal(balance, actualBalance.toNumber());
+      return;
+    }
+
+    assert.fail();
   });
 });
