@@ -2,13 +2,18 @@ const assert = require('assert');
 const PriceSubdomainRegistrar = artifacts.require('PriceSubdomainRegistrar');
 const RNS = artifacts.require('RNS');
 const Whitelist = artifacts.require('Whitelist');
+const Token = artifacts.require('BasicToken');
 const namehash = require('eth-ens-namehash').hash;
 
 contract('PriceSubdomainRegistrar', async accounts => {
-  var rns, whitelist, registrar;
+  var rns, whitelist, token, registrar;
+
+  var adminAddress;
 
   const whitelistManager = accounts[1];
   const whitelisted = accounts[2];
+
+  const adminInitialBalance = 1e19;
 
   const rootNode = namehash('rsk');
   const label = web3.sha3('whitelisted');
@@ -17,7 +22,8 @@ contract('PriceSubdomainRegistrar', async accounts => {
   beforeEach(async () => {
     rns = await RNS.new();
     whitelist = await Whitelist.new();
-    registrar = await PriceSubdomainRegistrar.new(rns.address, whitelist.address, rootNode);
+    token = await Token.new(1e21);
+    registrar = await PriceSubdomainRegistrar.new(rns.address, whitelist.address, token.address, rootNode);
 
     await rns.setSubnodeOwner(0, web3.sha3('rsk'), registrar.address);
 
@@ -25,6 +31,9 @@ contract('PriceSubdomainRegistrar', async accounts => {
 
     await whitelist.addManager(whitelistManager);
     await whitelist.addWhitelisted(whitelisted, { from: whitelistManager });
+
+    adminAddress = await registrar.admin();
+    await token.transfer(adminAddress, adminInitialBalance);
   });
 
   it('should create PriceSubdomainRegistrar contract', async () => {
@@ -88,7 +97,13 @@ contract('PriceSubdomainRegistrar', async accounts => {
     const isWhitelisted = whitelist.isWhitelisted(registrar.address);
 
     assert.ok(isWhitelisted);
-  })
+  });
+
+  it('should receive tokens on payment admin', async () => {
+    const balance = await token.balanceOf(adminAddress);
+
+    assert.equal(balance, adminInitialBalance);
+  });
 
   it('should remove whitelisted after registration', async () => {
     await registrar.register(label, { from: whitelisted });
@@ -96,5 +111,15 @@ contract('PriceSubdomainRegistrar', async accounts => {
     const isWhitelisted = await whitelist.isWhitelisted(whitelisted);
 
     assert.ok(!isWhitelisted);
+  });
+
+  it('should transfer one token to who registers a domain', async () => {
+    const balance = await token.balanceOf(whitelisted);
+
+    await registrar.register(label, { from: whitelisted });
+
+    const actualBalance = await token.balanceOf(whitelisted);
+
+    assert.equal(actualBalance, balance.toNumber() + 1e18);
   });
 });
