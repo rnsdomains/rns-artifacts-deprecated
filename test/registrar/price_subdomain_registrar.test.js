@@ -1,11 +1,13 @@
 const assert = require('assert');
 const PriceSubdomainRegistrar = artifacts.require('PriceSubdomainRegistrar');
+const RNS = artifacts.require('RNS');
 
 contract('PriceSubdomainRegistrar', async () => {
-  var registrar;
+  var rns, registrar;
 
   beforeEach(async () => {
-    registrar = await PriceSubdomainRegistrar.new();
+    rns = await RNS.new();
+    registrar = await PriceSubdomainRegistrar.new(rns.address);
   });
 
   it('should create PriceSubdomainRegistrar contract', async () => {
@@ -16,5 +18,11 @@ contract('PriceSubdomainRegistrar', async () => {
     const admin = await registrar.admin();
 
     assert.ok(admin);
+  });
+
+  it('should store RNS address', async () => {
+    const actualRns = await registrar.rns();
+
+    assert.equal(actualRns, rns.address);
   });
 });
