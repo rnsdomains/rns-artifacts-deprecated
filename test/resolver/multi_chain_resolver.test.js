@@ -1,8 +1,9 @@
-const assert = require('assert');
 const RNS = artifacts.require('RNS');
 const PublicResolver = artifacts.require('PublicResolver');
 const MultiChainResolver = artifacts.require('MultiChainResolver');
+
 const namehash = require('eth-ens-namehash').hash;
+const rootNode = require('../constants').BYTES32_ZERO;
 
 contract('MultiChainResolver', async (accounts) => {
   var publicResolver, multiChainResolver;
@@ -19,7 +20,7 @@ contract('MultiChainResolver', async (accounts) => {
     const rns = await RNS.new();
     publicResolver = await PublicResolver.new(rns.address);
 
-    await rns.setSubnodeOwner(0, web3.sha3('rsk'), accounts[0]);
+    await rns.setSubnodeOwner(rootNode, web3.utils.sha3('rsk'), accounts[0]);
     await rns.setResolver(hash, publicResolver.address);
 
     multiChainResolver = await MultiChainResolver.new(rns.address, publicResolver.address);
@@ -102,9 +103,9 @@ contract('MultiChainResolver', async (accounts) => {
 
   describe('RNSIP-02', async () => {
     it('should implement supportsInterface method', async () => {
-      const addrSign = web3.sha3('addr(bytes32)').slice(0, 10);
-      const contentSign = web3.sha3('content(bytes32)').slice(0, 10);
-      const chainAddrSign = web3.sha3('chainAddr(bytes32,bytes4)').slice(0, 10);
+      const addrSign = web3.utils.sha3('addr(bytes32)').slice(0, 10);
+      const contentSign = web3.utils.sha3('content(bytes32)').slice(0, 10);
+      const chainAddrSign = web3.utils.sha3('chainAddr(bytes32,bytes4)').slice(0, 10);
 
       const supportsAddr = await multiChainResolver.supportsInterface(addrSign);
       const supportsContent = await multiChainResolver.supportsInterface(contentSign);
@@ -115,7 +116,7 @@ contract('MultiChainResolver', async (accounts) => {
 
     it('should implement fallback function that throws', async () => {
       try {
-        web3.eth.sendTransaction({ from: accounts[0], to: multiChainResolver.address, value: 1e18 });
+        await web3.eth.sendTransaction({ from: accounts[0], to: multiChainResolver.address, value: web3.utils.toBN(1e18) });
       } catch (e) {
         return;
       }

@@ -1,0 +1,7 @@
+const BYTES32_ZERO = '0x0000000000000000000000000000000000000000000000000000000000000000';
+const tokens = n => web3.utils.toBN('1000000000000000000').mul(web3.utils.toBN(n));
+
+module.exports = {
+  BYTES32_ZERO,
+  tokens
+};

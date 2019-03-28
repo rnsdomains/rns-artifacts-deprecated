@@ -1,4 +1,3 @@
-const assert = require('assert');
 const Whitelist = artifacts.require('Whitelist');
 
 contract('Whitelist', async accounts => {
@@ -10,8 +9,8 @@ contract('Whitelist', async accounts => {
 
   it('should create Whitelist contract', async () => {
     assert(whitelist.address);
-   });
-
+  });
+  
   it('should store deployer as owner', async () => {
     const owner = await whitelist.owner();
 
@@ -155,7 +154,7 @@ contract('Whitelist', async accounts => {
     await whitelist.addManager(manager);
     await whitelist.addWhitelisted(whitelisted, { from: manager });
 
-    await web3.currentProvider.send({ id: 0, jsonrpc: '2.0', method: 'evm_increaseTime', params: [86401] });
+    await web3.currentProvider.send({ id: 0, jsonrpc: '2.0', method: 'evm_increaseTime', params: [86401] }, () => { });
 
     const isWhitelisted = await whitelist.isWhitelisted(whitelisted);
 
@@ -170,7 +169,7 @@ contract('Whitelist', async accounts => {
     await whitelist.addManager(manager);
     await whitelist.addWhitelisted(whitelisted, { from: manager });
 
-    await web3.currentProvider.send({ id: 0, jsonrpc: '2.0', method: 'evm_increaseTime', params: [172800] });
+    await web3.currentProvider.send({ id: 0, jsonrpc: '2.0', method: 'evm_increaseTime', params: [172800] }, () => { });
 
     const isWhitelisted = await whitelist.isWhitelisted(whitelisted);
 

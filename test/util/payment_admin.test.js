@@ -1,6 +1,13 @@
-const assert = require('assert');
+var chai = require('chai');
+var BN = require('bn.js');
+var bnChai = require('bn-chai');
+chai.use(bnChai(BN));
+const expect = chai.expect;
+
 const PaymentAdmin = artifacts.require('PaymentAdmin');
 const Token = artifacts.require('BasicToken');
+
+const tokens = require('../constants').tokens;
 
 contract('PaymentAdmin', async accounts => {
   var paymentAdmin, token;
@@ -9,7 +16,7 @@ contract('PaymentAdmin', async accounts => {
 
   beforeEach(async () => {
     paymentAdmin = await PaymentAdmin.new({ from: owner });
-    token = await Token.new(1e20, { from: tokenHolder });
+    token = await Token.new(tokens(100), { from: tokenHolder });
   });
 
   it('should create PaymentAdmin contract', async () => {
@@ -23,29 +30,29 @@ contract('PaymentAdmin', async accounts => {
   });
 
   it('should fallback to owner address', async () => {
-    const balance = await web3.eth.getBalance(owner);
-    const value = 1e18;
+    const balance = web3.utils.toBN(await web3.eth.getBalance(owner));
+    const value = web3.utils.toBN(1);
 
     await web3.eth.sendTransaction({ from: accounts[1], to: paymentAdmin.address, value });
 
     const actualBalance = await web3.eth.getBalance(owner);
 
-    assert.equal(actualBalance, balance.toNumber() + value);
+    expect(actualBalance).to.eq.BN(balance.add(value));
   });
 
   it('should receive tokens', async () => {
     const balance = await token.balanceOf(paymentAdmin.address);
-    const value = 1e19;
+    const value = tokens(10);
 
     await token.transfer(paymentAdmin.address, value, { from: tokenHolder });
 
     const actualBalance = await token.balanceOf(paymentAdmin.address);
 
-    assert.equal(actualBalance, balance.toNumber() + value);
+    expect(actualBalance).to.eq.BN(balance.add(value));
   });
 
   it('should retrive received tokens', async () => {
-    const value = 1e19;
+    const value = tokens(10);
     const receiver = accounts[2];
 
     const balance = await token.balanceOf(paymentAdmin.address);
@@ -57,12 +64,12 @@ contract('PaymentAdmin', async accounts => {
     const actualBalance = await token.balanceOf(paymentAdmin.address);
     const actualReceiverBalance = await token.balanceOf(receiver);
 
-    assert.equal(actualBalance.toNumber(), balance.toNumber());
-    assert.equal(actualReceiverBalance, receiverBalance.toNumber() + value);
+    expect(actualBalance).to.eq.BN(balance);
+    expect(actualReceiverBalance).to.eq.BN(receiverBalance.add(value));
   });
 
   it('should allow only owner to retrive tokens', async () => {
-    const value = 1e19;
+    const value = tokens(10);
     await token.transfer(paymentAdmin.address, value, { from: tokenHolder });
 
     const balance = await token.balanceOf(paymentAdmin.address);
@@ -71,7 +78,7 @@ contract('PaymentAdmin', async accounts => {
       await paymentAdmin.retriveTokens(accounts[3], token.address, { from: accounts[3] });
     } catch {
       const actualBalance = await token.balanceOf(paymentAdmin.address);
-      assert.equal(actualBalance, balance.toNumber());
+      expect(actualBalance).to.eq.BN(balance);
       return;
     }
 
@@ -79,10 +86,10 @@ contract('PaymentAdmin', async accounts => {
   });
 
   it('should transfer tokens to another account', async () => {
-    const value = 1e18;
+    const value = tokens(10);
     const receiver = accounts[2];
 
-    await token.transfer(paymentAdmin.address, 1e19, { from: tokenHolder });
+    await token.transfer(paymentAdmin.address, value, { from: tokenHolder });
 
     const balance = await token.balanceOf(receiver);
 
@@ -90,21 +97,20 @@ contract('PaymentAdmin', async accounts => {
 
     const actualBalance = await token.balanceOf(receiver);
 
-    assert.equal(actualBalance.toNumber(), balance.toNumber() + value);
+    expect(actualBalance).to.eq.BN(balance.add(value));
   });
 
   it('should allow only owner to send tokens', async () => {
-    await token.transfer(paymentAdmin.address, 1e19, { from: tokenHolder });
+    const value = tokens(10);
+    await token.transfer(paymentAdmin.address, value, { from: tokenHolder });
 
     const balance = await token.balanceOf(paymentAdmin.address);
 
     try {
-      const value = 1e18;
-
       await paymentAdmin.transfer(accounts[4], token.address, value, { from: accounts[4] });
     } catch {
       const actualBalance = await token.balanceOf(paymentAdmin.address);
-      assert.equal(balance, actualBalance.toNumber());
+      expect(actualBalance).to.eq.BN(balance);
       return;
     }
 

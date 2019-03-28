@@ -1,9 +1,16 @@
-const assert = require('assert');
+var chai = require('chai');
+var BN = require('bn.js');
+var bnChai = require('bn-chai');
+chai.use(bnChai(BN));
+const expect = chai.expect;
+
 const PriceSubdomainRegistrar = artifacts.require('PriceSubdomainRegistrar');
 const RNS = artifacts.require('RNS');
 const Whitelist = artifacts.require('Whitelist');
 const Token = artifacts.require('BasicToken');
 const namehash = require('eth-ens-namehash').hash;
+const zeroNode = require('../constants').BYTES32_ZERO;
+const tokens = require('../constants').tokens;
 
 contract('PriceSubdomainRegistrar', async accounts => {
   var rns, whitelist, token, registrar;
@@ -13,21 +20,21 @@ contract('PriceSubdomainRegistrar', async accounts => {
   const whitelistManager = accounts[1];
   const whitelisted = accounts[2];
 
-  const adminInitialBalance = 1e19;
+  const adminInitialBalance = tokens(10);
 
   const rootNode = namehash('rsk');
-  const label = web3.sha3('whitelisted');
+  const label = web3.utils.sha3('whitelisted');
   const subdomain = namehash('whitelisted.rsk');
 
-  const initialPrice = 1e18;
+  const initialPrice = tokens(1);
 
   beforeEach(async () => {
     rns = await RNS.new();
     whitelist = await Whitelist.new();
-    token = await Token.new(1e21);
+    token = await Token.new(tokens(1000));
     registrar = await PriceSubdomainRegistrar.new(rns.address, whitelist.address, token.address, rootNode);
 
-    await rns.setSubnodeOwner(0, web3.sha3('rsk'), registrar.address);
+    await rns.setSubnodeOwner(zeroNode, web3.utils.sha3('rsk'), registrar.address);
 
     await whitelist.addManager(registrar.address);
 
@@ -104,7 +111,7 @@ contract('PriceSubdomainRegistrar', async accounts => {
   it('should receive tokens on payment admin', async () => {
     const balance = await token.balanceOf(adminAddress);
 
-    assert.equal(balance, adminInitialBalance);
+    expect(balance).to.eq.BN(adminInitialBalance);
   });
 
   it('should remove whitelisted after registration', async () => {
@@ -122,27 +129,27 @@ contract('PriceSubdomainRegistrar', async accounts => {
 
     const actualBalance = await token.balanceOf(whitelisted);
 
-    assert.equal(actualBalance, balance.toNumber() + initialPrice);
+    expect(actualBalance).to.eq.BN(balance.add(initialPrice));
   });
 
   it('should update token price', async () => {
-    const price = 2e18;
+    const price = tokens(2);
 
     await registrar.setPrice(price);
 
     const actualPrice = await registrar.price();
 
-    assert.equal(actualPrice, price);
+    expect(actualPrice).to.eq.BN(price);
   });
 
   it('should allow only owner to update token price', async () => {
-    const price = 10e18;
+    const price = tokens(10);
 
     try {
       await registrar.setPrice(price, { from: accounts[4]});
     } catch {
       const actualPrice = await registrar.price();
-      assert.equal(actualPrice, initialPrice);
+      expect(actualPrice).to.eq.BN(initialPrice);
       return;
     }
 
@@ -157,7 +164,7 @@ contract('PriceSubdomainRegistrar', async accounts => {
 
     const actualBalance = await token.balanceOf(receiver);
 
-    assert.equal(actualBalance, balance.toNumber() + adminInitialBalance);
+    expect(actualBalance).to.eq.BN(balance.add(adminInitialBalance));
   });
 
   it('should allow only owner to retrive tokens', async () => {
@@ -168,7 +175,7 @@ contract('PriceSubdomainRegistrar', async accounts => {
       await registrar.retriveTokens(receiver, token.address, { from: receiver});
     } catch {
       const actualBalance = await token.balanceOf(receiver);
-      assert.equal(actualBalance, balance.toNumber());
+      expect(actualBalance).to.eq.BN(balance);
       return;
     }
 

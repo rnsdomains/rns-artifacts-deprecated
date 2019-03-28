@@ -1,19 +1,20 @@
-const assert = require('assert');
 const RNS = artifacts.require('RNS');
 const SubdomainRegistrar = artifacts.require('SubdomainRegistrar');
+
 const namehash = require('eth-ens-namehash').hash;
+const rootNode = require('../constants').BYTES32_ZERO;
 
 contract('SubdomainRegistrar', async accounts => {
   var rns, subdomainRegistrar;
   const rooNode = namehash('rsk');
-  const label = web3.sha3('subdomain');
+  const label = web3.utils.sha3('subdomain');
   const node = namehash('subdomain.rsk');
 
   beforeEach(async () => {
     rns = await RNS.new();
     subdomainRegistrar = await SubdomainRegistrar.new(rns.address, rooNode);
 
-    await rns.setSubnodeOwner(0, web3.sha3('rsk'), subdomainRegistrar.address);
+    await rns.setSubnodeOwner(rootNode, web3.utils.sha3('rsk'), subdomainRegistrar.address);
   });
 
   it('should create SubdomainRegistrar contract', async () => { return });

@@ -1,7 +1,8 @@
-const assert = require('assert');
 const RNS = artifacts.require('RNS');
 const PublicResolver = artifacts.require('PublicResolver');
 const namehash = require('eth-ens-namehash').hash;
+
+const rootNode = require('../constants').BYTES32_ZERO;
 
 contract('PublicResolver', async (accounts) => {
   var rns, publicResolver;
@@ -10,7 +11,7 @@ contract('PublicResolver', async (accounts) => {
   beforeEach(async () => {
     rns = await RNS.new();
     publicResolver = await PublicResolver.new(rns.address);
-    await rns.setSubnodeOwner(0, web3.sha3('rsk'), accounts[0]);
+    await rns.setSubnodeOwner(rootNode, web3.utils.sha3('rsk'), accounts[0]);
     await rns.setResolver(hash, publicResolver.address);
   });
 
