@@ -1,4 +1,4 @@
-pragma solidity >=0.4.21 <0.6.0;
+pragma solidity ^0.5.2;
 
 contract AddressHelper {
     function addressToString (address data) public pure returns (string memory) {
@@ -16,7 +16,7 @@ contract AddressHelper {
     }
 
     function char (byte b) internal pure returns (byte c) {
-        if (b < 10) return byte(uint8(b) + 0x30);
+        if (b < 0x0A) return byte(uint8(b) + 0x30);
         else return byte(uint8(b) + 0x57);
     }
 
@@ -68,16 +68,16 @@ contract AddressHelper {
     }
 
     function fromHexChar(uint c) public pure returns (uint) {
-        if (c >= uint(byte('0')) && c <= uint(byte('9'))) {
-            return c - uint(byte('0'));
+        if (c >= 0x30 && c <= 0x39) {
+            return c - 0x30;
         }
 
-        if (c >= uint(byte('a')) && c <= uint(byte('f'))) {
-            return 10 + c - uint(byte('a'));
+        if (c >= 0x61 && c <= 0x66) {
+            return 10 + c - 0x61;
         }
 
-        if (c >= uint(byte('A')) && c <= uint(byte('F'))) {
-            return 10 + c - uint(byte('A'));
+        if (c >= 0x41 && c <= 0x46) {
+            return 10 + c - 0x41;
         }
 
         // Reaching this point means the ordinal is not for a hex char.

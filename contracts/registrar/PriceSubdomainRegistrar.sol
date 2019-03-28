@@ -1,4 +1,4 @@
-pragma solidity >=0.4.21 <0.6.0;
+pragma solidity ^0.5.2;
 
 import "../registry/AbstractRNS.sol";
 import "../util/PaymentAdmin.sol";
@@ -43,7 +43,7 @@ contract PriceSubdomainRegistrar {
         price = _price;
     }
 
-    function retriveTokens (address receiver, ERC20Basic token) public onlyOwner() {
-        admin.retriveTokens(receiver, token);
+    function retriveTokens (address receiver, ERC20Basic _token) public onlyOwner() {
+        admin.retriveTokens(receiver, _token);
     }
 }

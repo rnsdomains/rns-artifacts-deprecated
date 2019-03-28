@@ -1,4 +1,4 @@
-pragma solidity >=0.4.21 <0.6.0;
+pragma solidity ^0.5.2;
 
 import "../registry/AbstractRNS.sol";
 
@@ -27,7 +27,7 @@ contract PublicResolver {
     /**
      * Fallback function.
      */
-    function() public {
+    function() payable external {
         revert();
     }
 
@@ -39,7 +39,7 @@ contract PublicResolver {
      *         provided node.
      */
     function has(bytes32 node, bytes32 kind) public view returns (bool) {
-        return  (kind == "addr" && addresses[node] != 0) || 
+        return  (kind == "addr" && addresses[node] != address(0)) || 
         (kind == "hash" && hashes[node] != 0);
     }
 

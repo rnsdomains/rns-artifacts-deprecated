@@ -1,4 +1,4 @@
-pragma solidity >=0.4.21 <0.6.0;
+pragma solidity ^0.5.2;
 
 import "./AbstractRNS.sol";
 
@@ -97,9 +97,9 @@ contract RNS is AbstractRNS {
 
     /**
      * Sets the default resolver for new nodes
-     * @param resolver The address of the new defaultResolver
+     * @param _resolver The address of the new defaultResolver
      */
-    function setDefaultResolver(address resolver) public only_owner(0) {
-        records[bytes32(0)].resolver = resolver;
+    function setDefaultResolver(address _resolver) public only_owner(0) {
+        records[bytes32(0)].resolver = _resolver;
     }
 }

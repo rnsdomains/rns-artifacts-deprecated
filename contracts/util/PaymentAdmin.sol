@@ -1,9 +1,9 @@
-pragma solidity >=0.4.21 <0.6.0;
+pragma solidity ^0.5.2;
 
 import "../token/ERC20Basic.sol";
 
 contract PaymentAdmin {
-    address public owner = msg.sender;
+    address payable public owner = msg.sender;
 
     modifier onlyOwner () {
         require(msg.sender == owner);
