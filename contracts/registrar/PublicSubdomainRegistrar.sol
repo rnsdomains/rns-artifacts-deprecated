@@ -31,6 +31,7 @@ contract PublicSubdomainRegistrar {
 
     function transferBack (bytes32 node) public onlyPreviousOwner(node) {
         rns.setOwner(node, delegated[node]);
+        delegated[node] = address(0);
     }
 
     function register (bytes32 node, bytes32 label) public {

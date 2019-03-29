@@ -70,6 +70,17 @@ contract('PublicSubdomainRegistrar', async accounts => {
     assert.equal(owner, accounts[0]);
   });
 
+  it('should not be delegate of nodes transfered back', async () => {
+    await rns.setSubnodeOwner(rootNode, label, publicSubdomainRegistrar.address);
+    await publicSubdomainRegistrar.delegate(node, { from: accounts[0] });
+
+    await publicSubdomainRegistrar.transferBack(node);
+
+    const isDelegated = await publicSubdomainRegistrar.isDelegated(node);
+
+    assert.ok(!isDelegated);
+  });
+
   it('should allow only previous owner to transfer back nodes', async () => {
     await rns.setSubnodeOwner(rootNode, label, publicSubdomainRegistrar.address);
     await publicSubdomainRegistrar.delegate(node, { from: accounts[0] });
