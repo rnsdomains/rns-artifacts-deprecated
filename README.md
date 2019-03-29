@@ -2,7 +2,7 @@
 
 RNS library for smart contract development.
 
-Read the [../../wiki](wiki).
+Read the [wiki](../../wiki).
 
 ## Requirements: 
 
