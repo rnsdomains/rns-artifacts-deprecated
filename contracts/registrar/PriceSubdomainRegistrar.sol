@@ -1,6 +1,7 @@
 pragma solidity ^0.5.2;
 
 import "../registry/AbstractRNS.sol";
+import "../resolver/PublicResolver.sol";
 import "../util/PaymentAdmin.sol";
 import "../util/AbstractWhitelist.sol";
 import "../token/ERC20Basic.sol";
@@ -16,6 +17,7 @@ contract PriceSubdomainRegistrar {
 
     PaymentAdmin public admin = new PaymentAdmin();
     AbstractRNS public rns;
+    PublicResolver public resolver;
     AbstractWhitelist public whitelist;
     ERC20Basic public token;
     bytes32 public rootNode;
@@ -39,8 +41,9 @@ contract PriceSubdomainRegistrar {
      * @param _token ERC20Basic ERC-20 token address.
      * @param _rootNode bytes32 An owned node. The contract emits subnodes under this node.
      */
-    constructor (AbstractRNS _rns, AbstractWhitelist _whitelist, ERC20Basic _token, bytes32 _rootNode) public {
+    constructor (AbstractRNS _rns, PublicResolver _resolver, AbstractWhitelist _whitelist, ERC20Basic _token, bytes32 _rootNode) public {
         rns = _rns;
+        resolver = _resolver;
         whitelist = _whitelist;
         rootNode = _rootNode;
         token = _token;
@@ -51,8 +54,16 @@ contract PriceSubdomainRegistrar {
      * receives a token price.
      * @param label bytres32 The label of the new subnode.
      */
-    function register (bytes32 label) public onlyWhitelisted() {
-        rns.setSubnodeOwner(rootNode, label, msg.sender);
+    function register (bytes32 label, bytes32 subNodeHash, address addr) public onlyWhitelisted() {
+        address hashOwner = rns.owner(subNodeHash);            
+        if (hashOwner != address(0)) {
+            revert("Subdomain already has owner");
+        }
+
+        rns.setSubnodeOwner(rootNode, label, address(this));        
+        resolver.setAddr(subNodeHash, addr);                
+        rns.setOwner(subNodeHash, addr);
+
         whitelist.removeWhitelisted(msg.sender);
         admin.transfer(msg.sender, token, price);
     }
