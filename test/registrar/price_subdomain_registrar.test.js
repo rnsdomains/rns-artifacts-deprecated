@@ -93,7 +93,7 @@ contract('PriceSubdomainRegistrar', async accounts => {
 
     try {
       await registrar.register(label, { from: accounts[3] });
-    } catch {
+    } catch(ex) {
       const actualOwner = await rns.owner(subdomain);
       assert.equal(actualOwner, owner);
       return;
@@ -147,7 +147,7 @@ contract('PriceSubdomainRegistrar', async accounts => {
 
     try {
       await registrar.setPrice(price, { from: accounts[4]});
-    } catch {
+    } catch (ex){
       const actualPrice = await registrar.price();
       expect(actualPrice).to.eq.BN(initialPrice);
       return;
@@ -156,24 +156,24 @@ contract('PriceSubdomainRegistrar', async accounts => {
     assert.fail();
   });
 
-  it('should allow to retrive tokens', async () => {
+  it('should allow to retrieve tokens', async () => {
     const receiver = accounts[4];
     const balance = await token.balanceOf(receiver);
 
-    await registrar.retriveTokens(receiver, token.address);
+    await registrar.retrieveTokens(receiver, token.address);
 
     const actualBalance = await token.balanceOf(receiver);
 
     expect(actualBalance).to.eq.BN(balance.add(adminInitialBalance));
   });
 
-  it('should allow only owner to retrive tokens', async () => {
+  it('should allow only owner to retrieve tokens', async () => {
     const receiver = accounts[6];
     const balance = await token.balanceOf(receiver);
 
     try {
-      await registrar.retriveTokens(receiver, token.address, { from: receiver});
-    } catch {
+      await registrar.retrieveTokens(receiver, token.address, { from: receiver});
+    } catch(ex) {
       const actualBalance = await token.balanceOf(receiver);
       expect(actualBalance).to.eq.BN(balance);
       return;

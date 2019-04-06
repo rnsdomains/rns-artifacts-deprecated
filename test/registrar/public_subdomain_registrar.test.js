@@ -26,7 +26,7 @@ contract('PublicSubdomainRegistrar', async accounts => {
   it('should receive delegated root nodes only if owned', async () => {
     try {
       await publicSubdomainRegistrar.delegate(node);
-    } catch {
+    } catch(ex) {
       await rns.setSubnodeOwner(rootNode, label, publicSubdomainRegistrar.address);
       await publicSubdomainRegistrar.delegate(node);
       return;
@@ -87,7 +87,7 @@ contract('PublicSubdomainRegistrar', async accounts => {
 
     try {
       await publicSubdomainRegistrar.transferBack(node, { from: accounts[1] });
-    } catch {
+    } catch(ex) {
       return;
     }
 
@@ -112,7 +112,7 @@ contract('PublicSubdomainRegistrar', async accounts => {
 
     try {
       await publicSubdomainRegistrar.register(node, web3.utils.sha3('ilan'), { from: accounts[1] });
-    } catch {
+    } catch(ex) {
       return;
     }
 

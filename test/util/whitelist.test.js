@@ -36,7 +36,7 @@ contract('Whitelist', async accounts => {
 
     try {
       await whitelist.addManager(manager, { from: accounts[1] });
-    } catch {
+    } catch(ex) {
       const isManager = await whitelist.isManager(accounts[1]);
       assert.ok(!isManager);
       return;
@@ -61,7 +61,7 @@ contract('Whitelist', async accounts => {
   it('should allow only managers to whitelist', async () => {
     try {
       await whitelist.addWhitelisted(accounts[1], { from: accounts[1] });
-    } catch {
+    } catch(ex) {
       const isWhitelisted = await whitelist.isWhitelisted(accounts[1]);
       assert.ok(!isWhitelisted);
       return;
@@ -88,7 +88,7 @@ contract('Whitelist', async accounts => {
 
     try {
       await whitelist.removeManager(manager, { from: accounts[2] });
-    } catch {
+    } catch(ex) {
       const isManager = await whitelist.isManager(accounts[1]);
       assert.ok(isManager);
       return;
@@ -106,7 +106,7 @@ contract('Whitelist', async accounts => {
 
     try {
       await whitelist.removeManager(manager, { from: otherManager });
-    } catch {
+    } catch(ex) {
       const isManager = await whitelist.isManager(manager);
       assert.ok(isManager);
       return;
@@ -138,7 +138,7 @@ contract('Whitelist', async accounts => {
 
     try {
       await whitelist.removeWhitelisted(whitelisted, { from: accounts[3] });
-    } catch {
+    } catch(ex) {
       const isWhitelisted = await whitelist.isWhitelisted(whitelisted);
       assert.ok(isWhitelisted);
       return;
@@ -179,7 +179,7 @@ contract('Whitelist', async accounts => {
   it('should allow only owner to change period', async () => {
     try {
       await whitelist.setExpirationTime(1, { from: accounts[1] });
-    } catch {
+    } catch(ex) {
       const time = await whitelist.whitelistedTime();
       assert.equal(time, 86400);
       return;

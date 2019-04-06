@@ -75,7 +75,7 @@ contract('MultiChainResolver', async (accounts) => {
     try {
       const newAddr = '0x4444444444555555555566666666667777777777';
       await multiChainResolver.setAddr(hash, newAddr, { from: accounts[1] });
-    } catch {
+    } catch(ex) {
       const actualAddr = await multiChainResolver.addr(hash);
       assert.equal(actualAddr, addr);
       return;
@@ -92,7 +92,7 @@ contract('MultiChainResolver', async (accounts) => {
     try {
       const newContent = '0x61747461636b0000000000000000000000000000000000000000000000000000'; // bytes for 'attack'
       await multiChainResolver.setContent(hash, newContent, { from: accounts[1] });
-    } catch {
+    } catch(ex) {
       const actualContent = await multiChainResolver.content(hash);
       assert.equal(actualContent, content);
       return;
@@ -117,7 +117,7 @@ contract('MultiChainResolver', async (accounts) => {
     it('should implement fallback function that throws', async () => {
       try {
         await web3.eth.sendTransaction({ from: accounts[0], to: multiChainResolver.address, value: web3.utils.toBN(1e18) });
-      } catch (e) {
+      } catch(ex) {
         return;
       }
       assert.fail();
@@ -192,7 +192,7 @@ contract('MultiChainResolver', async (accounts) => {
       try {
         const newAddr = '0x4444444444555555555566666666667777777777';
         await multiChainResolver.setChainAddr(hash, chainId.rsk, newAddr, { from: accounts[1] });
-      } catch {
+      } catch(ex) {
         const actualAddr = await multiChainResolver.addr(hash);
         assert.equal(actualAddr, addr);
         return;
@@ -241,14 +241,14 @@ contract('MultiChainResolver', async (accounts) => {
       });
     });
 
-    it('should allow only RNS owner to set chian address', async () => {
+    it('should allow only RNS owner to set chain address', async () => {
       const addr = '0x0000000000111111111122222222223333333333';
       await multiChainResolver.setChainAddr(hash, chainId.eth, addr);
 
       try {
         const newAddr = '0x4444444444555555555566666666667777777777';
         await multiChainResolver.setChainAddr(hash, chainId.eth, newAddr, { from: accounts[1] });
-      } catch {
+      } catch(ex) {
         const actualAddr = await multiChainResolver.chainAddr(hash, chainId.eth);
         assert.equal(actualAddr, addr);
         return;

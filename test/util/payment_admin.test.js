@@ -51,7 +51,7 @@ contract('PaymentAdmin', async accounts => {
     expect(actualBalance).to.eq.BN(balance.add(value));
   });
 
-  it('should retrive received tokens', async () => {
+  it('should retrieve received tokens', async () => {
     const value = tokens(10);
     const receiver = accounts[2];
 
@@ -59,7 +59,7 @@ contract('PaymentAdmin', async accounts => {
     const receiverBalance = await token.balanceOf(receiver);
 
     await token.transfer(paymentAdmin.address, value, { from: tokenHolder });
-    await paymentAdmin.retriveTokens(receiver, token.address);
+    await paymentAdmin.retrieveTokens(receiver, token.address);
 
     const actualBalance = await token.balanceOf(paymentAdmin.address);
     const actualReceiverBalance = await token.balanceOf(receiver);
@@ -68,15 +68,15 @@ contract('PaymentAdmin', async accounts => {
     expect(actualReceiverBalance).to.eq.BN(receiverBalance.add(value));
   });
 
-  it('should allow only owner to retrive tokens', async () => {
+  it('should allow only owner to retrieve tokens', async () => {
     const value = tokens(10);
     await token.transfer(paymentAdmin.address, value, { from: tokenHolder });
 
     const balance = await token.balanceOf(paymentAdmin.address);
 
     try {
-      await paymentAdmin.retriveTokens(accounts[3], token.address, { from: accounts[3] });
-    } catch {
+      await paymentAdmin.retrieveTokens(accounts[3], token.address, { from: accounts[3] });
+    } catch(ex) {
       const actualBalance = await token.balanceOf(paymentAdmin.address);
       expect(actualBalance).to.eq.BN(balance);
       return;
@@ -108,7 +108,7 @@ contract('PaymentAdmin', async accounts => {
 
     try {
       await paymentAdmin.transfer(accounts[4], token.address, value, { from: accounts[4] });
-    } catch {
+    } catch(ex) {
       const actualBalance = await token.balanceOf(paymentAdmin.address);
       expect(actualBalance).to.eq.BN(balance);
       return;
