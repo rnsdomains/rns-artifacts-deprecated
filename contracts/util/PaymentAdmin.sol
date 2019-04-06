@@ -14,7 +14,7 @@ contract PaymentAdmin {
         owner.transfer(msg.value);
     }
 
-    function retriveTokens (address receiver, ERC20Basic token) public onlyOwner() {
+    function retrieveTokens (address receiver, ERC20Basic token) public onlyOwner() {
         uint256 balance = token.balanceOf(address(this));
         token.transfer(receiver, balance);
     }

@@ -48,7 +48,7 @@ contract PublicSubdomainRegistrar {
 
     /**
      * @dev Transfers back a delegated node to who delegated it.
-     * @param node bytes32 Node to retrive.
+     * @param node bytes32 Node to retrieve.
      */
     function transferBack (bytes32 node) public onlyPreviousOwner(node) {
         rns.setOwner(node, delegated[node]);

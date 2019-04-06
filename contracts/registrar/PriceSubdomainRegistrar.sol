@@ -54,18 +54,20 @@ contract PriceSubdomainRegistrar {
      * receives a token price.
      * @param label bytres32 The label of the new subnode.
      */
-    function register (bytes32 label, bytes32 subNodeHash, address addr) public onlyWhitelisted() {
-        address hashOwner = rns.owner(subNodeHash);            
+    function register (bytes32 label, address addr) public onlyWhitelisted() {           
+        bytes32 subnode = keccak256(abi.encodePacked(rootNode, label));   
+        address hashOwner = rns.owner(subnode);      
+
         if (hashOwner != address(0)) {
             revert("Subdomain already has owner");
         }
 
         rns.setSubnodeOwner(rootNode, label, address(this));        
-        resolver.setAddr(subNodeHash, addr);                
-        rns.setOwner(subNodeHash, addr);
+        resolver.setAddr(subnode, addr);                
+        rns.setOwner(subnode, addr);
 
         whitelist.removeWhitelisted(msg.sender);
-        admin.transfer(msg.sender, token, price);
+        admin.transfer(addr, token, price);
     }
 
     /**
@@ -79,9 +81,9 @@ contract PriceSubdomainRegistrar {
     /**
      * @dev Transfer the tokens stored in the token admin contract.
      * @param receiver address The address of the token receiver.
-     * @param _token ERC20Basic The token to retrive the founds of.
+     * @param _token ERC20Basic The token to retrieve the founds of.
      */
-    function retriveTokens (address receiver, ERC20Basic _token) public onlyOwner() {
-        admin.retriveTokens(receiver, _token);
+    function retrieveTokens (address receiver, ERC20Basic _token) public onlyOwner() {
+        admin.retrieveTokens(receiver, _token);
     }
 }
