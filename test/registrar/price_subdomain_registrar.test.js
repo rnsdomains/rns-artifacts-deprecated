@@ -8,17 +8,20 @@ const PriceSubdomainRegistrar = artifacts.require('PriceSubdomainRegistrar');
 const RNS = artifacts.require('RNS');
 const Whitelist = artifacts.require('Whitelist');
 const Token = artifacts.require('BasicToken');
+const PublicResolver = artifacts.require('PublicResolver');
 const namehash = require('eth-ens-namehash').hash;
 const zeroNode = require('../constants').BYTES32_ZERO;
 const tokens = require('../constants').tokens;
 
 contract('PriceSubdomainRegistrar', async accounts => {
-  var rns, whitelist, token, registrar;
+  var rns, whitelist, token, registrar, resolver;
 
   var adminAddress;
 
   const whitelistManager = accounts[1];
   const whitelisted = accounts[2];
+
+  const addr = '0x0123456789012345678901234567890123456789';
 
   const adminInitialBalance = tokens(10);
 
@@ -33,6 +36,9 @@ contract('PriceSubdomainRegistrar', async accounts => {
     whitelist = await Whitelist.new();
     token = await Token.new(tokens(1000));
     registrar = await PriceSubdomainRegistrar.new(rns.address, whitelist.address, token.address, rootNode);
+    resolver = await PublicResolver.new(rns.address);
+
+    await rns.setDefaultResolver(resolver.address);
 
     await rns.setSubnodeOwner(zeroNode, web3.utils.sha3('rsk'), registrar.address);
 
@@ -81,18 +87,18 @@ contract('PriceSubdomainRegistrar', async accounts => {
   });
 
   it('should register subdomains for whitelisted accounts', async () => {
-    await registrar.register(label, { from: whitelisted });
+    await registrar.register(label, addr, { from: whitelisted });
 
     const owner = await rns.owner(subdomain);
 
-    assert.equal(owner, whitelisted);
+    assert.equal(owner, addr);
   });
 
   it('should not register subdomains for not-whitelisted accounts', async () => {
     const owner = await rns.owner(subdomain);
 
     try {
-      await registrar.register(label, { from: accounts[3] });
+      await registrar.register(label, addr, { from: accounts[3] });
     } catch {
       const actualOwner = await rns.owner(subdomain);
       assert.equal(actualOwner, owner);
@@ -115,7 +121,7 @@ contract('PriceSubdomainRegistrar', async accounts => {
   });
 
   it('should remove whitelisted after registration', async () => {
-    await registrar.register(label, { from: whitelisted });
+    await registrar.register(label, addr, { from: whitelisted });
 
     const isWhitelisted = await whitelist.isWhitelisted(whitelisted);
 
@@ -123,30 +129,40 @@ contract('PriceSubdomainRegistrar', async accounts => {
   });
 
   it('should transfer one token to who registers a domain', async () => {
-    const balance = await token.balanceOf(whitelisted);
+    const balance = await token.balanceOf(addr);
 
-    await registrar.register(label, { from: whitelisted });
+    await registrar.register(label, addr, { from: whitelisted });
 
-    const actualBalance = await token.balanceOf(whitelisted);
+    const actualBalance = await token.balanceOf(addr);
 
     expect(actualBalance).to.eq.BN(balance.add(initialPrice));
   });
 
   it('should register only not owned names', async () => {
-    await registrar.register(label, { from: whitelisted });
+    await registrar.register(label, addr, { from: whitelisted });
 
     const otherWhitelisted = accounts[7];
     await whitelist.addWhitelisted(otherWhitelisted, { from: whitelistManager });
 
     try {
-      await registrar.register(label, { from: otherWhitelisted });
+      await registrar.register(label, addr, { from: otherWhitelisted });
     } catch {
       const owner = await rns.owner(subdomain);
-      assert.equal(owner, whitelisted);
+      assert.equal(owner, addr);
       return;
     }
 
     assert.fail();
+  });
+
+  it('should set addr in resolver', async () => {
+    const addr = '0x0123456789012345678901234567890123456789';
+
+    await registrar.register(label, addr, { from: whitelisted });
+
+    const actualAddr = await resolver.addr(subdomain);
+
+    assert.equal(actualAddr, addr);
   });
 
   it('should update token price', async () => {

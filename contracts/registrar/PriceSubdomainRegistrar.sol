@@ -4,6 +4,7 @@ import "../registry/AbstractRNS.sol";
 import "../util/PaymentAdmin.sol";
 import "../util/AbstractWhitelist.sol";
 import "../token/ERC20Basic.sol";
+import "../resolver/AbstractAddrResolver.sol";
 
 /**
  * @title PriceSubdomainRegistrar
@@ -20,6 +21,8 @@ contract PriceSubdomainRegistrar {
     bytes32 public rootNode;
 
     uint256 public price = 1 * (10 ** 18);
+
+    bytes4 constant ADDR_SIGN = 0x3b3b57de;
 
     modifier onlyOwner () {
         require(msg.sender == owner);
@@ -50,13 +53,19 @@ contract PriceSubdomainRegistrar {
      * receives a token price.
      * @param label bytres32 The label of the new subnode.
      */
-    function register (bytes32 label) public onlyWhitelisted() {
+    function register (bytes32 label, address addr) public onlyWhitelisted() {
         bytes32 subnode = keccak256(abi.encodePacked(rootNode, label));
         require(rns.owner(subnode) == address(0));
 
-        rns.setSubnodeOwner(rootNode, label, msg.sender);
+        AbstractAddrResolver resolver = AbstractAddrResolver(rns.resolver(rootNode));
+        require(resolver.supportsInterface(ADDR_SIGN));
+
+        rns.setSubnodeOwner(rootNode, label, address(this));
+        resolver.setAddr(subnode, addr);
+
+        rns.setOwner(subnode, addr);
         whitelist.removeWhitelisted(msg.sender);
-        admin.transfer(msg.sender, token, price);
+        admin.transfer(addr, token, price);
     }
 
     /**
