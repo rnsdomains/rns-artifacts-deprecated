@@ -4,7 +4,7 @@ RNS library for smart contract development.
 
 Read the [wiki](../../wiki).
 
-## Requirements: 
+## Requirements:
 
 [`truffle`](https://github.com/truffle-suite/truffle).
 ```
@@ -15,13 +15,6 @@ Web3.js >= v1.0.0
 ```
 
 ## Setup
-
-Install a new Solidity version:
-
-```
-cd /usr/local/lib/node_modules/truffle
-npm install solc@0.5.x # x >= 2
-```
 
 ```
 yarn install

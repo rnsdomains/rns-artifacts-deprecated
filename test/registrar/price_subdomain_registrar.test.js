@@ -132,6 +132,23 @@ contract('PriceSubdomainRegistrar', async accounts => {
     expect(actualBalance).to.eq.BN(balance.add(initialPrice));
   });
 
+  it('should register only not owned names', async () => {
+    await registrar.register(label, { from: whitelisted });
+
+    const otherWhitelisted = accounts[7];
+    await whitelist.addWhitelisted(otherWhitelisted, { from: whitelistManager });
+
+    try {
+      await registrar.register(label, { from: otherWhitelisted });
+    } catch {
+      const owner = await rns.owner(subdomain);
+      assert.equal(owner, whitelisted);
+      return;
+    }
+
+    assert.fail();
+  });
+
   it('should update token price', async () => {
     const price = tokens(2);
 

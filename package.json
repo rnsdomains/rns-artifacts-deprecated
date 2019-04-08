@@ -21,6 +21,7 @@
     "service"
   ],
   "license": "MIT",
+  "dependencies": {},
   "devDependencies": {
     "bn-chai": "^1.0.1",
     "bn.js": "^4.11.8",

@@ -9,7 +9,6 @@ import "../token/ERC20Basic.sol";
  * @title PriceSubdomainRegistrar
  * Allows anyone who is whitelisted to create subnodes under a given
  * RNS node and receive a price for doing this.
- * 
  */
 contract PriceSubdomainRegistrar {
     address owner = msg.sender;
@@ -52,6 +51,9 @@ contract PriceSubdomainRegistrar {
      * @param label bytres32 The label of the new subnode.
      */
     function register (bytes32 label) public onlyWhitelisted() {
+        bytes32 subnode = keccak256(abi.encodePacked(rootNode, label));
+        require(rns.owner(subnode) == address(0));
+
         rns.setSubnodeOwner(rootNode, label, msg.sender);
         whitelist.removeWhitelisted(msg.sender);
         admin.transfer(msg.sender, token, price);
