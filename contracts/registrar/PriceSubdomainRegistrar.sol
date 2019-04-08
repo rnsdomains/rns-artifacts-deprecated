@@ -70,9 +70,9 @@ contract PriceSubdomainRegistrar {
     /**
      * @dev Transfer the tokens stored in the token admin contract.
      * @param receiver address The address of the token receiver.
-     * @param _token ERC20Basic The token to retrive the founds of.
+     * @param _token ERC20Basic The token to retrieve the founds of.
      */
-    function retriveTokens (address receiver, ERC20Basic _token) public onlyOwner() {
-        admin.retriveTokens(receiver, _token);
+    function retrieveTokens (address receiver, ERC20Basic _token) public onlyOwner() {
+        admin.retrieveTokens(receiver, _token);
     }
 }
