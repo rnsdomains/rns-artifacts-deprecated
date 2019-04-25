@@ -214,4 +214,22 @@ contract('PriceSubdomainRegistrar', async accounts => {
 
     assert.fail();
   });
+
+  it('should allow to retrive domain ownership', async () => {
+    await registrar.transferBack();
+
+    const owner = await rns.owner(rootNode);
+
+    assert.equal(owner, accounts[0]);
+  });
+
+  it('should allow only owner to trasnfer back', async () => {
+    try {
+      await registrar.transferBack({ from: accounts[1] });
+    } catch {
+      const owner = await rns.owner(rootNode);
+      assert.equal(owner, registrar.address);
+      return;
+    }
+  });
 });

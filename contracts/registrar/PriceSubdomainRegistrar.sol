@@ -84,4 +84,11 @@ contract PriceSubdomainRegistrar {
     function retrieveTokens (address receiver, ERC20Basic _token) public onlyOwner() {
         admin.retrieveTokens(receiver, _token);
     }
+
+  /**
+   * @dev Transfers back the root node ownership to the contract's owner.
+   */
+  function transferBack () public onlyOwner() {
+    rns.setOwner(rootNode, owner);
+  }
 }

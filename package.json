@@ -2,6 +2,11 @@
   "name": "rns-artifacts",
   "version": "1.0.0",
   "description": "RNS library for smart contract development.",
+  "files": [
+    "build",
+    "contracts",
+    "test/behaviors"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/rnsdomains/rns-artifacts.git"
