@@ -2,19 +2,19 @@ const RNS = artifacts.require('RNS');
 const SubdomainRegistrar = artifacts.require('SubdomainRegistrar');
 
 const namehash = require('eth-ens-namehash').hash;
-const rootNode = require('../constants').BYTES32_ZERO;
+const zeroNode = require('../constants').BYTES32_ZERO;
 
 contract('SubdomainRegistrar', async accounts => {
   var rns, subdomainRegistrar;
-  const rooNode = namehash('rsk');
+  const rootNode = namehash('rsk');
   const label = web3.utils.sha3('subdomain');
   const node = namehash('subdomain.rsk');
 
   beforeEach(async () => {
     rns = await RNS.new();
-    subdomainRegistrar = await SubdomainRegistrar.new(rns.address, rooNode);
+    subdomainRegistrar = await SubdomainRegistrar.new(rns.address, rootNode);
 
-    await rns.setSubnodeOwner(rootNode, web3.utils.sha3('rsk'), subdomainRegistrar.address);
+    await rns.setSubnodeOwner(zeroNode, web3.utils.sha3('rsk'), subdomainRegistrar.address);
   });
 
   it('should create SubdomainRegistrar contract', async () => { return });
@@ -28,7 +28,7 @@ contract('SubdomainRegistrar', async accounts => {
   it('should store root domain', async () => {
     const actualRoot = await subdomainRegistrar.rootNode();
 
-    assert.equal(actualRoot, rooNode);
+    assert.equal(actualRoot, rootNode);
   });
 
   it('should own root node on rns registry', async () => { return });
@@ -58,7 +58,7 @@ contract('SubdomainRegistrar', async accounts => {
   it('should allow to retrive domain ownership', async () => {
     await subdomainRegistrar.transferBack();
 
-    const owner = await rns.owner(rooNode);
+    const owner = await rns.owner(rootNode);
 
     assert.equal(owner, accounts[0]);
   });
@@ -67,7 +67,7 @@ contract('SubdomainRegistrar', async accounts => {
     try {
       await subdomainRegistrar.transferBack({ from: accounts[1] });
     } catch {
-      const owner = await rns.owner(rooNode);
+      const owner = await rns.owner(rootNode);
       assert.equal(owner, subdomainRegistrar.address);
       return;
     }
