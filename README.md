@@ -31,8 +31,17 @@ truffle(develop)> test
 truffle(develop)> test ./test/path/to/test.js
 ```
 
-<hr />
+---
 
-#### Related links
-- [Documentation](https://docs.rns.rifos.org)
-- [RNS Manager](https://manager.rns.rifos.org)
+## Related links
+
+- [RSK](https://rsk.co)
+    - [Docs](https://github.com/rsksmart/rskj/wiki)
+- [RIF](https://rifos.org)
+    - [Docs](https://www.rifos.org/documentation/)
+    - [Whitepaper](https://docs.rifos.org/rif-whitepaper-en.pdf)
+    - [Testnet faucet](https://faucet.rifos.org)
+- RNS
+    - [Docs](https://docs.rns.rifos.org)
+    - [Manager](https://rns.rifos.org)
+    - [Testnet registrar](https://testnet.rns.rifos.org)
