@@ -1,4 +1,6 @@
-# rns-artifacts
+<img src="/logo.png" alt="logo" height="200" />
+
+# `rns-artifacts`
 
 RNS library for smart contract development.
 
