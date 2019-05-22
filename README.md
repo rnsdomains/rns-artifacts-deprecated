@@ -30,3 +30,9 @@ truffle(develop)> test
 
 truffle(develop)> test ./test/path/to/test.js
 ```
+
+<hr />
+
+#### Related links
+- [Documentation](https://docs.rns.rifos.org)
+- [RNS Manager](https://manager.rns.rifos.org)
