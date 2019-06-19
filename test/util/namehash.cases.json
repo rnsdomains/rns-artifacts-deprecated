@@ -1,0 +1,26 @@
+[
+  {
+    "name": "",
+    "hash": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  {
+    "name": "rsk",
+    "hash": "0x0cd5c10192478cd220936e91293afc15e3f6de4d419de5de7506b679cbdd8ec4"
+  },
+  {
+    "name": "node.rsk",
+    "hash": "0xdaa1b166bf72554b616db8da92435eb3026d30103b977842bb3725d9b168ed7a"
+  },
+  {
+    "name": "sub.node.rsk",
+    "hash": "0xcc6e7ec94b38ef48203cec347626b4002b03abdc27410c48dc08ebc7bc9f5219"
+  },
+  {
+    "name": "rns.rsk",
+    "hash": "0x9c63dfd8e345aebb042cd3c91c99ed8c7a5519329b386597fbdcc9a439ed116e"
+  },
+  {
+    "name": "registry.rns.rsk",
+    "hash": "0x07c18f9bac24c7ad9497fd35f728294a12e223dd9fc14970686bdc7aca783ec2"
+  }
+]
