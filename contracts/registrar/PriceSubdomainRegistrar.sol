@@ -3,7 +3,7 @@ pragma solidity ^0.5.2;
 import "../registry/AbstractRNS.sol";
 import "../util/PaymentAdmin.sol";
 import "../util/AbstractWhitelist.sol";
-import "../token/ERC20Basic.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "../resolver/AbstractAddrResolver.sol";
 
 /**
@@ -17,7 +17,7 @@ contract PriceSubdomainRegistrar {
     PaymentAdmin public admin = new PaymentAdmin();
     AbstractRNS public rns;
     AbstractWhitelist public whitelist;
-    ERC20Basic public token;
+    IERC20 public token;
     bytes32 public rootNode;
 
     uint256 public price = 1 * (10 ** 18);
@@ -38,10 +38,10 @@ contract PriceSubdomainRegistrar {
      * @dev Constructor
      * @param _rns AbstractRNS RNS registry address.
      * @param _whitelist AbstractWhitelist Whitelist to manage who can register domains.
-     * @param _token ERC20Basic ERC-20 token address.
+     * @param _token IERC20 ERC-20 token address.
      * @param _rootNode bytes32 An owned node. The contract emits subnodes under this node.
      */
-    constructor (AbstractRNS _rns, AbstractWhitelist _whitelist, ERC20Basic _token, bytes32 _rootNode) public {
+    constructor (AbstractRNS _rns, AbstractWhitelist _whitelist, IERC20 _token, bytes32 _rootNode) public {
         rns = _rns;
         whitelist = _whitelist;
         rootNode = _rootNode;
@@ -79,9 +79,9 @@ contract PriceSubdomainRegistrar {
     /**
      * @dev Transfer the tokens stored in the token admin contract.
      * @param receiver address The address of the token receiver.
-     * @param _token ERC20Basic The token to retrieve the founds of.
+     * @param _token IERC20 The token to retrieve the founds of.
      */
-    function retrieveTokens (address receiver, ERC20Basic _token) public onlyOwner() {
+    function retrieveTokens (address receiver, IERC20 _token) public onlyOwner() {
         admin.retrieveTokens(receiver, _token);
     }
 
