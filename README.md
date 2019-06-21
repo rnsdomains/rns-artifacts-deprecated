@@ -2,33 +2,64 @@
 
 # `rns-artifacts`
 
+[![npm rns-artifacts](https://badge.fury.io/js/rns-artifacts.svg)](http://badge.fury.io/js/rns-artifacts)
+
 RNS library for smart contract development.
 
-Read the [wiki](../../wiki).
+It provides implementations of RNS Registry, Registrars, and Resolvers which you can deploy as-is or extend to suit your needs, as well as Solidity components to build custom contracts and more complex decentralized systems.
 
-## Requirements:
-
-[`truffle`](https://github.com/truffle-suite/truffle).
-```
-Truffle >= 5.0.9 (core: 5.0.9)
-Solidity >= 0.5.2 (solc-js)
-Node >= v11.12.0
-Web3.js >= v1.0.0
-```
-
-## Setup
+## Install
 
 ```
-yarn install
+npm install rns-artifacts
 ```
 
-## Run tests
+## Usage
 
+To write your custom contracts, import ours and extend them through inheritance.
+
+```solidity
+pragma solidity ^0.5.2;
+
+import 'rns-artifacts/contracts/registry/AbstractRNS.sol';
+import 'rns-artifacts/contracts/resolver/AbstractResolver.sol';
+
+contract MyResolver is AbstractResolver {
+    AbstractRNS public rns;
+
+    constructor(AbstractRNS _rns) public {
+        rns = _rns;
+    }
+
+    function supportsInterface(bytes4) public pure returns (bool) {
+        return false;
+    }
+}
 ```
-truffle develop
-truffle(develop)> test
 
-truffle(develop)> test ./test/path/to/test.js
+To test your custom contracts in Truffle, improt ours and deploy them through `truffle-contract`.
+
+```js
+const assert = require('assert');
+const truffleContract = require('truffle-contract');
+
+const RNS = truffleContract(
+  require('rns-artifacts/build/contracts/RNS.json')
+);
+RNS.setProvider(web3.currentProvider);
+
+const MyResolver = artifacts.require('MyResolver');
+
+contract('RNS', async accounts => {
+  it('should create MyResolver', async () => {
+    const rns = await RNS.new({ from: accounts[0] });
+    const resolver = await MyResolver.new(rns.address);
+
+    const rnsAddress = await resolver.rns();
+
+    assert.equal(rnsAddress, rns.address);
+  });
+});
 ```
 
 ---
