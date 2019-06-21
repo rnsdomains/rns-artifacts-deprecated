@@ -4,8 +4,7 @@
   "description": "RNS library for smart contract development.",
   "files": [
     "build",
-    "contracts",
-    "test/behaviors"
+    "contracts"
   ],
   "repository": {
     "type": "git",
