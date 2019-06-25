@@ -37,7 +37,7 @@ contract MyResolver is AbstractResolver {
 }
 ```
 
-To test your custom contracts in Truffle, improt ours and deploy them through `truffle-contract`.
+To test your custom contracts in Truffle, import ours and deploy them through `truffle-contract`.
 
 ```js
 const assert = require('assert');

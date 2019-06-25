@@ -29,7 +29,7 @@ contract SubdomainRegistrar {
 
   /**
    * @dev Registers a new subnode under the root node. The new node owner is the sender
-   * @param label bytres32 The label of the new subnode.
+   * @param label bytes32 The label of the new subnode.
    */
   function register (bytes32 label) public {
     bytes32 node = keccak256(abi.encodePacked(rootNode, label));

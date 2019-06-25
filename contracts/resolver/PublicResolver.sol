@@ -39,7 +39,7 @@ contract PublicResolver {
      *         provided node.
      */
     function has(bytes32 node, bytes32 kind) public view returns (bool) {
-        return  (kind == "addr" && addresses[node] != address(0)) || 
+        return  (kind == "addr" && addresses[node] != address(0)) ||
         (kind == "hash" && hashes[node] != 0);
     }
 

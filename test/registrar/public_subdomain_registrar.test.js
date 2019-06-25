@@ -70,7 +70,7 @@ contract('PublicSubdomainRegistrar', async accounts => {
     assert.equal(owner, accounts[0]);
   });
 
-  it('should not be delegate of nodes transfered back', async () => {
+  it('should not be delegate of nodes transferred back', async () => {
     await rns.setSubnodeOwner(rootNode, label, publicSubdomainRegistrar.address);
     await publicSubdomainRegistrar.delegate(node, { from: accounts[0] });
 

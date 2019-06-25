@@ -17,7 +17,7 @@ contract('Whitelist', async accounts => {
     assert.equal(owner, accounts[0]);
   });
 
-  it('should be able to sotre managers', async () => {
+  it('should be able to store managers', async () => {
     const manager1 = accounts[1];
     const manager2 = accounts[2];
 

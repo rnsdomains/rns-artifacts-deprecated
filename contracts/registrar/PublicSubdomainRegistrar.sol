@@ -40,7 +40,7 @@ contract PublicSubdomainRegistrar {
     /**
      * @dev Check if a node is delegated to this contract.
      * @param node bytes32 An RNS node.
-     * @return if the node is delgated
+     * @return if the node is delegated
      */
     function isDelegated (bytes32 node) public view returns (bool) {
         return delegated[node] != address(0);
@@ -48,7 +48,7 @@ contract PublicSubdomainRegistrar {
 
     /**
      * @dev Transfers back a delegated node to who delegated it.
-     * @param node bytes32 Node to retrive.
+     * @param node bytes32 Node to retrieve.
      */
     function transferBack (bytes32 node) public onlyPreviousOwner(node) {
         rns.setOwner(node, delegated[node]);
@@ -56,7 +56,7 @@ contract PublicSubdomainRegistrar {
     }
 
     /**
-     * @dev Registrers a subnode under a given and delegated node.
+     * @dev Registers a subnode under a given and delegated node.
      * @param node bytes32 The parent node.
      * @param label bytes32 The hash of the label specifying the subnode.
      */

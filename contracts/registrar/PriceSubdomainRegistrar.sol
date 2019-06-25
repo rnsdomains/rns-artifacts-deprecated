@@ -49,9 +49,9 @@ contract PriceSubdomainRegistrar {
     }
 
     /**
-     * @dev Registrers a subnode under a given and delegated node. Who registers a domain
+     * @dev Registers a subnode under a given and delegated node. Who registers a domain
      * receives a token price.
-     * @param label bytres32 The label of the new subnode.
+     * @param label bytes32 The label of the new subnode.
      */
     function register (bytes32 label, address addr) public onlyWhitelisted() {
         bytes32 subnode = keccak256(abi.encodePacked(rootNode, label));
@@ -69,7 +69,7 @@ contract PriceSubdomainRegistrar {
     }
 
     /**
-     * @dev Sets the price given for regstring a subnode.
+     * @dev Sets the price given for the registration of a subnode.
      * @param _price uint256 The new price.
      */
     function setPrice (uint256 _price) public onlyOwner() {

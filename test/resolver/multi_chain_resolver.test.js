@@ -84,7 +84,7 @@ contract('MultiChainResolver', async (accounts) => {
     assert.fail();
   });
 
-  it('should allow only RNS owner to set conetnt', async () => {
+  it('should allow only RNS owner to set content', async () => {
     const content = '0x524e5320544c4400000000000000000000000000000000000000000000000000'; // bytes for 'RNS TLD'
     await multiChainResolver.setContent(hash, content);
 
@@ -289,7 +289,7 @@ contract('MultiChainResolver', async (accounts) => {
     assert.equal(actualMeta, meta);
   });
 
-  it('should emit ChainMetadataChenged event', async () => {
+  it('should emit ChainMetadataChanged event', async () => {
     const meta = '0x5032504b48000000000000000000000000000000000000000000000000000000' // 32 bytes for 'P2PKH'
 
     const tx = await multiChainResolver.setChainMetadata(hash, chainId.btc, meta);

@@ -215,7 +215,7 @@ contract('PriceSubdomainRegistrar', async accounts => {
     assert.fail();
   });
 
-  it('should allow to retrive domain ownership', async () => {
+  it('should allow to retrieve domain ownership', async () => {
     await registrar.transferBack();
 
     const owner = await rns.owner(rootNode);
@@ -223,7 +223,7 @@ contract('PriceSubdomainRegistrar', async accounts => {
     assert.equal(owner, accounts[0]);
   });
 
-  it('should allow only owner to trasnfer back', async () => {
+  it('should allow only owner to transfer back', async () => {
     try {
       await registrar.transferBack({ from: accounts[1] });
     } catch {
