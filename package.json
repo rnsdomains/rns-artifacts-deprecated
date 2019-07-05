@@ -1,5 +1,5 @@
 {
-  "name": "rns-artifacts",
+  "name": "@rsksmart/rns-artifacts",
   "version": "1.0.0",
   "description": "RNS library for smart contract development.",
   "files": [
