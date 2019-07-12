@@ -2,7 +2,7 @@
 
 # `rns-artifacts`
 
-[![npm rns-artifacts](https://badge.fury.io/js/rns-artifacts.svg)](http://badge.fury.io/js/rns-artifacts)
+[![npm @RSKSmart/rns-artifacts](https://badge.fury.io/js/%40rsksmart%2Frns-artifacts.svg)](https://badge.fury.io/js/%40rsksmart%2Frns-artifacts)
 
 RNS library for smart contract development.
 
