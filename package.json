@@ -37,5 +37,9 @@
     "chai": "^4.2.0",
     "eth-ens-namehash": "^2.0.8",
     "web3": "^1.0.0-beta.51"
+  },
+  "resolutions": {
+    "lodash": "^4.17.14",
+    "lodash.template": "^4.5.0"
   }
 }
