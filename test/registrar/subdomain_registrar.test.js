@@ -4,6 +4,12 @@ const SubdomainRegistrar = artifacts.require('SubdomainRegistrar');
 const namehash = require('eth-ens-namehash').hash;
 const zeroNode = require('../constants').BYTES32_ZERO;
 
+var chai = require('chai');
+var BN = require('bn.js');
+var bnChai = require('bn-chai');
+chai.use(bnChai(BN));
+const expect = chai.expect;
+
 contract('SubdomainRegistrar', async accounts => {
   var rns, subdomainRegistrar;
   const rootNode = namehash('rsk');
@@ -31,7 +37,11 @@ contract('SubdomainRegistrar', async accounts => {
     assert.equal(actualRoot, rootNode);
   });
 
-  it('should own root node on rns registry', async () => { return });
+  it('should own root node on rns registry', async () => {
+    const owner = await rns.owner(rootNode);
+
+    assert.equal(owner, subdomainRegistrar.address);
+  });
 
   it('should register a subnode in rns', async () => {
     await subdomainRegistrar.register(label, { from: accounts[0] });
@@ -71,5 +81,71 @@ contract('SubdomainRegistrar', async accounts => {
       assert.equal(owner, subdomainRegistrar.address);
       return;
     }
+  });
+
+  describe('should implement Registrar Interface', async () => {
+    it('should allow owner to set resolver', async () => {
+      const resolver = '0x0000000000111111111122222222223333333333';
+
+      await subdomainRegistrar.setRootResolver(resolver);
+
+      const actualResolver = await rns.resolver(rootNode);
+
+      assert.equal(actualResolver, resolver);
+    });
+
+    it('should allow only owner to set resolver', async () => {
+      const resolver = '0x0000000000111111111122222222223333333333';
+
+      try {
+        await subdomainRegistrar.setRootResolver(resolver, { from: accounts[1] });
+      } catch {
+        const previousResolver = '0x0000000000000000000000000000000000000000';
+
+        const actualResolver = await rns.resolver(rootNode);
+
+        assert.equal(actualResolver, previousResolver);
+
+        return;
+      }
+
+      assert.fail();
+    });
+
+    it('should allow owner to set ttl', async () => {
+      const ttl = web3.utils.toBN(1000);
+
+      await subdomainRegistrar.setRootTTL(ttl);
+
+      const actualTtl = await rns.ttl(rootNode);
+
+      expect(actualTtl).to.eq.BN(ttl);
+    });
+
+    it('should allow only owner to set ttl', async () => {
+      const ttl = web3.utils.toBN(1000);
+
+      try {
+        await subdomainRegistrar.setRootTTL(ttl, { from: accounts[1] });
+      } catch {
+        const previousTtl = web3.utils.toBN(0);
+
+        const actualTtl = await rns.ttl(rootNode);
+
+        expect(actualTtl).to.eq.BN(previousTtl);
+
+        return;
+      }
+
+      assert.fail();
+    });
+
+    it('should support base registrar interface', async () => {
+      const interfaceID = '0x657efd4f';
+
+      const supportsInterface = await subdomainRegistrar.supportsInterface(interfaceID);
+
+      assert(supportsInterface);
+    })
   });
 });
