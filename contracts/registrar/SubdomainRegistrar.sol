@@ -1,30 +1,19 @@
 pragma solidity ^0.5.2;
 
 import "../registry/AbstractRNS.sol";
+import "./BaseRegistrar.sol";
 
 /**
  * @title SubdomainRegistrar
  * Allows anyone to create subnodes under a given and owned RNS node.
  */
-contract SubdomainRegistrar {
-  AbstractRNS public rns;
-  bytes32 public rootNode;
-  address owner;
-
-  modifier onlyOwner () {
-    require(msg.sender == owner);
-    _;
-  }
-
+contract SubdomainRegistrar is BaseRegistrar {
   /**
    * @dev Constructor
    * @param _rns AbstractRNS RNS registry address
    * @param _rootNode An owned node. The contract emits subnodes under this node.
    */
-  constructor (AbstractRNS _rns, bytes32 _rootNode) public {
-    rns = _rns;
-    rootNode = _rootNode;
-    owner = msg.sender;
+  constructor (AbstractRNS _rns, bytes32 _rootNode) public BaseRegistrar(_rns, _rootNode) {
   }
 
   /**
@@ -42,6 +31,6 @@ contract SubdomainRegistrar {
    * @dev Transfers back the root node ownership to the contract's owner.
    */
   function transferBack () public onlyOwner() {
-    rns.setOwner(rootNode, owner);
+    rns.setOwner(rootNode, owner());
   }
 }
