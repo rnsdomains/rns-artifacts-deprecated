@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/tmp
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm i -g truffle
+      - run: npm test
