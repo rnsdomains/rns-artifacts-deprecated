@@ -155,6 +155,7 @@ contract('Whitelist', async accounts => {
     await whitelist.addWhitelisted(whitelisted, { from: manager });
 
     await web3.currentProvider.send({ id: 0, jsonrpc: '2.0', method: 'evm_increaseTime', params: [86401] }, () => { });
+    await web3.currentProvider.send({ id: 0, jsonrpc: '2.0', method: 'evm_mine', params: [] }, () => { });
 
     const isWhitelisted = await whitelist.isWhitelisted(whitelisted);
 
@@ -170,6 +171,7 @@ contract('Whitelist', async accounts => {
     await whitelist.addWhitelisted(whitelisted, { from: manager });
 
     await web3.currentProvider.send({ id: 0, jsonrpc: '2.0', method: 'evm_increaseTime', params: [172800] }, () => { });
+    await web3.currentProvider.send({ id: 0, jsonrpc: '2.0', method: 'evm_mine', params: [] }, () => { });
 
     const isWhitelisted = await whitelist.isWhitelisted(whitelisted);
 

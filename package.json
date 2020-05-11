@@ -1,13 +1,13 @@
 {
   "name": "@rsksmart/rns-artifacts",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "RNS library for smart contract development.",
   "files": [
     "build",
     "contracts"
   ],
   "scripts": {
-    "test": "truffle test"
+    "test": "npx truffle test"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
   "homepage": "https://rns.rifos.org",
   "license": "MIT",
   "dependencies": {
+    "minimist": ">=0.2.1",
     "openzeppelin-solidity": "^2.3.0"
   },
   "devDependencies": {
@@ -36,6 +37,7 @@
     "bn.js": "^4.11.8",
     "chai": "^4.2.0",
     "eth-ens-namehash": "^2.0.8",
+    "truffle": "^5.1.25",
     "web3": "^1.0.0-beta.51"
   },
   "resolutions": {

@@ -1,20 +1,29 @@
-<img src="/logo.png" alt="logo" height="200" />
-
-# `rns-artifacts`
-
-[![npm @RSKSmart/rns-artifacts](https://badge.fury.io/js/%40rsksmart%2Frns-artifacts.svg)](https://badge.fury.io/js/%40rsksmart%2Frns-artifacts)
-
-RNS library for smart contract development.
-
-It provides implementations of RNS Registry, Registrars, and Resolvers which you can deploy as-is or extend to suit your needs, as well as Solidity components to build custom contracts and more complex decentralized systems.
-
-## Install
+<p align="middle">
+    <img src="https://www.rifos.org/assets/img/logo.svg" alt="logo" height="100" >
+</p>
+<h3 align="middle"><code>rns-artifacts-depreacted</code></h3>
+<p align="middle">
+    <b>(deprecated)</b> RNS library for smart contract development.
+</p>
+<p align="middle">
+    <a href="https://circleci.com/gh/rnsdomains/rns-artifacts-depreacted">
+        <img src="https://circleci.com/gh/rnsdomains/rns-artifacts-deprecated.svg?style=svg" alt="CircleCI" />
+    </a>
+    <a href="https://badge.fury.io/js/%40rnsdomains%2Frns-artifacts">
+        <img src="https://badge.fury.io/js/%40rsksmart%2Frns-artifacts.svg" alt="logo" />
+    </a>
+    <a href="https://crytic.io/rnsdomains/rns-artifacts-deprecated"><img src="https://crytic.io/api/repositories/EINEI5coSh-ZW6dICU3oCA/badge.svg?token=fe91d693-ecee-459f-ab16-2f29ebc51d4d" /></a>
+</p>
 
 ```
-npm install rns-artifacts
+npm i @rsksmart/rns-artifacts
 ```
+
+> :warning: **Deprecated**: [View new implementation](/rnsdomains/rns-artifacts/)
 
 ## Usage
+
+This package provides implementations of RNS Registry, Registrars, and Resolvers which you can deploy as-is or extend to suit your needs, as well as Solidity components to build custom contracts and more complex decentralized systems.
 
 To write your custom contracts, import ours and extend them through inheritance.
 
@@ -61,18 +70,3 @@ contract('RNS', async accounts => {
   });
 });
 ```
-
----
-
-## Related links
-
-- [RSK](https://rsk.co)
-    - [Docs](https://github.com/rsksmart/rskj/wiki)
-- [RIF](https://rifos.org)
-    - [Docs](https://www.rifos.org/documentation/)
-    - [Whitepaper](https://docs.rifos.org/rif-whitepaper-en.pdf)
-    - [Testnet faucet](https://faucet.rifos.org)
-- RNS
-    - [Docs](https://docs.rns.rifos.org)
-    - [Manager](https://rns.rifos.org)
-    - [Testnet registrar](https://testnet.rns.rifos.org)
